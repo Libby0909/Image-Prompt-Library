@@ -1,0 +1,2649 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>Libby 的生圖詞庫</title>
+<meta content="Libby 的生圖詞庫，支援手機與電腦，提供中英文 AI 生圖風格詞、提示詞組裝器與一鍵複製。" name="description"/>
+<style>
+    :root{
+      --bg:#fff9fc;
+      --panel:rgba(255,255,255,.86);
+      --text:#352d38;
+      --muted:#786d79;
+      --pink:#ff78ab;
+      --pink2:#ffc4dc;
+      --blue:#8cc8ff;
+      --blue2:#dcefff;
+      --line:#f1dce6;
+      --shadow:0 16px 50px rgba(119,71,96,.12);
+      --chip:#fff;
+      --danger:#a73e61;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,-apple-system,sans-serif;
+      background:
+        radial-gradient(circle at 10% 5%, rgba(255,183,212,.42), transparent 28%),
+        radial-gradient(circle at 90% 10%, rgba(159,211,255,.42), transparent 27%),
+        linear-gradient(180deg,#fffafd 0%,#f8fbff 100%);
+      min-height:100vh;
+    }
+    button,input{font:inherit}
+    .hero{
+      padding:52px 20px 24px;
+      text-align:center;
+    }
+    .hero-badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 14px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(255,255,255,.9);
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      color:#8c5571;
+      font-size:14px;
+      font-weight:700;
+      backdrop-filter:blur(12px);
+    }
+    h1{
+      margin:20px auto 12px;
+      max-width:850px;
+      font-size:clamp(34px,7vw,70px);
+      line-height:1.05;
+      letter-spacing:-.04em;
+    }
+    .gradient-text{
+      background:linear-gradient(90deg,#ff5b9c,#a36ef4,#55aaff);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .subtitle{
+      max-width:760px;
+      margin:0 auto;
+      color:var(--muted);
+      line-height:1.8;
+      font-size:16px;
+    }
+    .toolbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      padding:12px 18px;
+      backdrop-filter:blur(18px);
+      background:rgba(255,249,252,.82);
+      border-bottom:1px solid rgba(241,220,230,.85);
+    }
+    .toolbar-inner{
+      max-width:1180px;
+      margin:auto;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      align-items:center;
+    }
+    .search{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:13px 16px;
+      background:white;
+      outline:none;
+      box-shadow:0 8px 24px rgba(119,71,96,.06);
+    }
+    .search:focus{
+      border-color:var(--pink);
+      box-shadow:0 0 0 4px rgba(255,120,171,.12);
+    }
+    .top-btn{
+      border:0;
+      border-radius:14px;
+      padding:12px 16px;
+      background:linear-gradient(135deg,var(--pink),#9f86ff);
+      color:white;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(255,120,171,.23);
+    }
+    .nav{
+      max-width:1180px;
+      margin:18px auto 0;
+      padding:0 20px;
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      scrollbar-width:none;
+    }
+    .nav::-webkit-scrollbar{display:none}
+    .nav a{
+      flex:0 0 auto;
+      text-decoration:none;
+      color:#6d5968;
+      background:rgba(255,255,255,.82);
+      border:1px solid var(--line);
+      padding:9px 13px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:700;
+    }
+    main{
+      max-width:1180px;
+      margin:26px auto 80px;
+      padding:0 20px;
+    }
+    .guide{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin-bottom:26px;
+    }
+    .guide-card{
+      background:var(--panel);
+      border:1px solid rgba(255,255,255,.96);
+      border-radius:22px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+    }
+    .guide-card b{display:block;margin-bottom:7px}
+    .guide-card span{color:var(--muted);font-size:14px;line-height:1.65}
+    .section{
+      margin:22px 0;
+      background:var(--panel);
+      border:1px solid rgba(255,255,255,.96);
+      border-radius:28px;
+      padding:26px;
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+    }
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    .section h2{
+      margin:0;
+      font-size:26px;
+    }
+    .section-desc{
+      margin:7px 0 0;
+      color:var(--muted);
+      line-height:1.65;
+      font-size:14px;
+    }
+    .copy-section{
+      flex:0 0 auto;
+      border:1px solid var(--line);
+      background:white;
+      color:#8b5471;
+      border-radius:13px;
+      padding:9px 12px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .groups{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+    .group{
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:17px;
+      background:rgba(255,255,255,.7);
+    }
+    .group h3{
+      margin:0 0 12px;
+      font-size:17px;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .chip{
+      border:1px solid #eadbe3;
+      background:var(--chip);
+      color:#5f515c;
+      padding:9px 11px;
+      border-radius:13px;
+      cursor:pointer;
+      text-align:left;
+      line-height:1.35;
+      transition:.18s ease;
+    }
+    .chip:hover{
+      transform:translateY(-2px);
+      border-color:var(--pink);
+      box-shadow:0 8px 18px rgba(255,120,171,.13);
+    }
+    .chip.copied{
+      color:white;
+      border-color:transparent;
+      background:linear-gradient(135deg,var(--pink),#9e8cff);
+    }
+    .combo-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+    .combo{
+      position:relative;
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:20px;
+      background:
+        linear-gradient(135deg,rgba(255,236,245,.75),rgba(235,246,255,.75)),
+        white;
+      overflow:hidden;
+    }
+    .combo::before{
+      content:"";
+      position:absolute;
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      top:-70px;
+      right:-45px;
+      background:linear-gradient(135deg,var(--pink2),var(--blue2));
+      opacity:.72;
+    }
+    .combo h3{
+      margin:0 0 8px;
+      font-size:19px;
+      position:relative;
+    }
+    .combo small{
+      display:block;
+      color:var(--muted);
+      margin-bottom:13px;
+      position:relative;
+    }
+    .combo-text{
+      padding:15px;
+      border-radius:15px;
+      background:rgba(255,255,255,.82);
+      line-height:1.8;
+      font-size:14px;
+      min-height:140px;
+      position:relative;
+      white-space:pre-wrap;
+    }
+    .combo button{
+      width:100%;
+      margin-top:12px;
+      border:0;
+      border-radius:13px;
+      padding:11px;
+      cursor:pointer;
+      color:white;
+      font-weight:800;
+      background:linear-gradient(135deg,#ff75a9,#8f91ff);
+      position:relative;
+    }
+    .formula{
+      padding:18px;
+      border:1px dashed #e5bfd0;
+      border-radius:18px;
+      background:linear-gradient(135deg,#fff8fb,#f6fbff);
+      line-height:1.8;
+      font-weight:700;
+    }
+    .tip{
+      margin-top:15px;
+      border-left:4px solid var(--pink);
+      padding:12px 14px;
+      border-radius:0 14px 14px 0;
+      background:#fff7fb;
+      color:#6c5763;
+      line-height:1.7;
+    }
+    .hidden-by-search{display:none!important}
+    .no-result{
+      display:none;
+      text-align:center;
+      padding:40px 20px;
+      color:var(--muted);
+    }
+    footer{
+      text-align:center;
+      color:#8d7b87;
+      padding:0 20px 50px;
+      line-height:1.7;
+      font-size:14px;
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:26px;
+      transform:translate(-50%,20px);
+      opacity:0;
+      pointer-events:none;
+      color:white;
+      background:rgba(53,45,56,.92);
+      padding:11px 16px;
+      border-radius:999px;
+      z-index:99;
+      transition:.2s ease;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+    }
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    mark{
+      background:#ffe1ed;
+      color:inherit;
+      padding:0 2px;
+      border-radius:4px;
+    }
+    @media(max-width:850px){
+      .guide{grid-template-columns:repeat(2,1fr)}
+      .groups,.combo-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:560px){
+      .hero{padding-top:44px}
+      .guide{grid-template-columns:1fr}
+      .section{padding:20px;border-radius:22px}
+      .section-head{display:block}
+      .copy-section{margin-top:12px}
+      .toolbar-inner{grid-template-columns:1fr}
+      .top-btn{display:none}
+    }
+  
+    .builder-shell{
+      margin:0 0 26px;
+      padding:26px;
+      border-radius:28px;
+      background:linear-gradient(135deg,rgba(255,244,249,.96),rgba(240,248,255,.96));
+      border:1px solid rgba(255,255,255,.98);
+      box-shadow:var(--shadow);
+      scroll-margin-top:92px;
+    }
+    .builder-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .builder-kicker{
+      color:#a25f80;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.14em;
+      margin-bottom:6px;
+    }
+    .builder-top h2{
+      margin:0;
+      font-size:28px;
+    }
+    .builder-top p{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.7;
+      font-size:14px;
+    }
+    .selected-count{
+      min-width:104px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:12px 14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.82);
+      border:1px solid var(--line);
+    }
+    .selected-count strong{
+      font-size:26px;
+      color:#e85f99;
+      line-height:1;
+    }
+    .selected-count span{
+      margin-top:5px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .language-tabs{
+      display:inline-flex;
+      padding:5px;
+      gap:5px;
+      background:rgba(255,255,255,.82);
+      border:1px solid var(--line);
+      border-radius:15px;
+      margin-bottom:12px;
+    }
+    .lang-btn{
+      border:0;
+      background:transparent;
+      color:#776771;
+      font-weight:800;
+      padding:9px 15px;
+      border-radius:11px;
+      cursor:pointer;
+    }
+    .lang-btn.active{
+      color:white;
+      background:linear-gradient(135deg,var(--pink),#918dff);
+      box-shadow:0 8px 18px rgba(255,120,171,.2);
+    }
+    .prompt-output{
+      display:block;
+      width:100%;
+      min-height:190px;
+      resize:vertical;
+      border:1px solid #e9d6df;
+      border-radius:19px;
+      background:rgba(255,255,255,.94);
+      color:var(--text);
+      padding:18px;
+      line-height:1.85;
+      outline:none;
+      box-shadow:inset 0 1px 4px rgba(103,61,83,.04);
+    }
+    .prompt-output:focus{
+      border-color:var(--pink);
+      box-shadow:0 0 0 4px rgba(255,120,171,.12);
+    }
+    .builder-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:13px;
+    }
+    .builder-actions button{
+      border-radius:13px;
+      padding:11px 16px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .primary-action{
+      border:0;
+      color:white;
+      background:linear-gradient(135deg,var(--pink),#8f91ff);
+      box-shadow:0 10px 24px rgba(255,120,171,.2);
+    }
+    .secondary-action{
+      color:#7e5870;
+      border:1px solid var(--line);
+      background:white;
+    }
+    .ghost-action{
+      color:#867780;
+      border:1px dashed #dcbfcc;
+      background:transparent;
+    }
+    .builder-note{
+      margin-top:14px;
+      color:#765e6b;
+      font-size:13px;
+      line-height:1.7;
+    }
+    .chip.selected{
+      color:white;
+      border-color:transparent;
+      background:linear-gradient(135deg,var(--pink),#8f91ff);
+      box-shadow:0 8px 18px rgba(255,120,171,.18);
+      transform:translateY(-1px);
+    }
+    .combo button.selected{
+      background:linear-gradient(135deg,#694f75,#4d7fab);
+    }
+    .combo button.selected::before{
+      content:"✓ ";
+    }
+    .builder-fab{
+      position:fixed;
+      right:20px;
+      bottom:22px;
+      z-index:40;
+      border:0;
+      border-radius:999px;
+      padding:12px 16px;
+      color:white;
+      font-weight:900;
+      cursor:pointer;
+      background:linear-gradient(135deg,var(--pink),#8f91ff);
+      box-shadow:0 12px 32px rgba(98,68,115,.28);
+    }
+    @media(max-width:560px){
+      .builder-shell{padding:20px;border-radius:22px}
+      .builder-top{display:block}
+      .selected-count{
+        margin-top:14px;
+        width:100%;
+        flex-direction:row;
+        gap:7px;
+      }
+      .prompt-output{min-height:220px}
+      .builder-actions button{flex:1 1 auto}
+      .builder-fab{right:14px;bottom:14px}
+    }
+
+    .combo-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+      position:relative;
+    }
+    .combo .combo-actions button{
+      width:100%;
+      margin-top:0;
+      border:0;
+      border-radius:13px;
+      padding:11px 12px;
+      cursor:pointer;
+      color:white;
+      font-weight:800;
+      position:relative;
+    }
+    .combo .add-builder-btn{
+      background:linear-gradient(135deg,#ff75a9,#8f91ff);
+    }
+    .combo .direct-copy-btn{
+      color:#78596d;
+      background:rgba(255,255,255,.94);
+      border:1px solid #ead6e0;
+      box-shadow:0 7px 18px rgba(113,72,94,.08);
+    }
+    .combo .direct-copy-btn:hover{
+      transform:translateY(-1px);
+      border-color:#ff86b4;
+    }
+    .combo .direct-copy-btn.copied{
+      color:white;
+      border-color:transparent;
+      background:linear-gradient(135deg,#6dba98,#6f9ed8);
+    }
+    @media(max-width:430px){
+      .combo-actions{
+        grid-template-columns:1fr;
+      }
+    }
+
+    /* 修正部分瀏覽器中直接複製按鈕文字不可見的問題 */
+    .combo-actions .direct-copy-btn{
+      display:flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+      min-height:44px !important;
+      opacity:1 !important;
+      visibility:visible !important;
+      color:#ffffff !important;
+      -webkit-text-fill-color:#ffffff !important;
+      font-size:14px !important;
+      font-weight:900 !important;
+      line-height:1.2 !important;
+      letter-spacing:.02em !important;
+      text-shadow:0 1px 2px rgba(52,48,95,.22) !important;
+      background:linear-gradient(135deg,#77a8ee,#9b83ee) !important;
+      border:1px solid rgba(113,105,207,.18) !important;
+      box-shadow:0 8px 20px rgba(102,111,190,.18) !important;
+    }
+    .combo-actions .direct-copy-btn:hover{
+      color:#ffffff !important;
+      -webkit-text-fill-color:#ffffff !important;
+      background:linear-gradient(135deg,#699de9,#8d75e9) !important;
+      transform:translateY(-1px);
+    }
+    .combo-actions .direct-copy-btn.copied{
+      color:#ffffff !important;
+      -webkit-text-fill-color:#ffffff !important;
+      background:linear-gradient(135deg,#67b894,#6f9ed8) !important;
+    }
+
+
+
+    /* 全站統一可愛圓體，不使用手寫感字型 */
+    :root{
+      --libby-round-font:
+        ui-rounded,
+        "SF Pro Rounded",
+        "Arial Rounded MT Bold",
+        "Nunito",
+        "Microsoft JhengHei UI",
+        "Microsoft JhengHei",
+        "PingFang TC",
+        "Noto Sans TC",
+        sans-serif;
+    }
+
+    html,
+    body,
+    button,
+    input,
+    textarea,
+    select,
+    h1,
+    h2,
+    h3,
+    p,
+    span,
+    small,
+    a,
+    b,
+    strong,
+    .chip,
+    .nav a,
+    .section-desc,
+    .combo-text,
+    .prompt-output,
+    .builder-note,
+    footer{
+      font-family:var(--libby-round-font) !important;
+    }
+
+    body{
+      font-weight:500;
+      letter-spacing:.01em;
+    }
+
+    h1{
+      font-weight:900 !important;
+      letter-spacing:.015em !important;
+    }
+
+    h2{
+      font-weight:900 !important;
+      letter-spacing:.012em;
+    }
+
+    h3{
+      font-weight:800 !important;
+      letter-spacing:.01em;
+    }
+
+    button,
+    .chip,
+    .nav a,
+    .lang-btn{
+      font-weight:800 !important;
+    }
+
+    .chip{
+      border-radius:17px !important;
+    }
+
+    .prompt-output,
+    .combo-text{
+      font-weight:500;
+      letter-spacing:.008em;
+    }
+
+    /* Libby 藍粉雙主色版本 */
+    :root{
+      --bg:#fff9fc;
+      --panel:rgba(255,255,255,.88);
+      --text:#3b3140;
+      --muted:#7b7080;
+
+      --pink:#ff9fc7;
+      --pink-strong:#ff78ae;
+      --pink-soft:#ffe4f0;
+      --pink-pale:#fff3f8;
+
+      --blue:#8ecbff;
+      --blue-strong:#6ab6f5;
+      --blue-soft:#dff1ff;
+      --blue-pale:#f2f9ff;
+
+      --line:#eaddea;
+      --shadow:0 16px 46px rgba(116,87,117,.12);
+      --chip:#ffffff;
+    }
+
+    body{
+      background:
+        radial-gradient(circle at 8% 4%, rgba(255,188,216,.48), transparent 30%),
+        radial-gradient(circle at 92% 8%, rgba(151,211,255,.48), transparent 30%),
+        radial-gradient(circle at 50% 42%, rgba(255,255,255,.86), transparent 42%),
+        linear-gradient(180deg,#fff8fc 0%,#f5faff 100%) !important;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      padding-top:58px !important;
+      padding-bottom:30px !important;
+    }
+
+    .hero::before,
+    .hero::after{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      pointer-events:none;
+      filter:blur(2px);
+      opacity:.68;
+    }
+
+    .hero::before{
+      width:180px;
+      height:180px;
+      left:8%;
+      top:-80px;
+      background:radial-gradient(circle,rgba(255,192,218,.72),rgba(255,192,218,0));
+    }
+
+    .hero::after{
+      width:190px;
+      height:190px;
+      right:8%;
+      top:-85px;
+      background:radial-gradient(circle,rgba(159,214,255,.72),rgba(159,214,255,0));
+    }
+
+    .hero h1{
+      position:relative;
+      z-index:1;
+      margin-top:0 !important;
+      margin-bottom:6px !important;
+      font-size:clamp(38px,7vw,72px) !important;
+      line-height:1.08 !important;
+      letter-spacing:.025em !important;
+    }
+
+    .hero h1 .gradient-text{
+      color:#f6a5c8 !important;
+      background:none !important;
+      -webkit-background-clip:initial !important;
+      background-clip:initial !important;
+      -webkit-text-fill-color:#f6a5c8 !important;
+      text-shadow:
+        0 3px 0 rgba(255,255,255,.95),
+        0 8px 24px rgba(242,151,192,.22) !important;
+    }
+
+    .hero h1::before{
+      content:"✦";
+      display:inline-block;
+      margin-right:12px;
+      color:#9ed4ff;
+      font-size:.52em;
+      vertical-align:.18em;
+      text-shadow:0 4px 14px rgba(110,180,237,.22);
+    }
+
+    .hero h1::after{
+      content:"♡";
+      display:inline-block;
+      margin-left:12px;
+      color:#ffc0da;
+      font-size:.52em;
+      vertical-align:.12em;
+      text-shadow:0 4px 14px rgba(246,159,198,.24);
+    }
+
+    .nav{
+      padding-top:2px !important;
+    }
+
+    .nav a{
+      color:#6f6272 !important;
+      background:linear-gradient(135deg,rgba(255,245,250,.96),rgba(242,249,255,.96)) !important;
+      border:1px solid rgba(218,207,226,.9) !important;
+      box-shadow:0 7px 18px rgba(117,91,120,.06);
+    }
+
+    .nav a:hover{
+      color:#ffffff !important;
+      border-color:transparent !important;
+      background:linear-gradient(135deg,var(--pink-strong),var(--blue-strong)) !important;
+      transform:translateY(-1px);
+    }
+
+    .builder-shell{
+      background:
+        linear-gradient(135deg,rgba(255,241,247,.98),rgba(237,248,255,.98)) !important;
+      border:1px solid rgba(255,255,255,.98) !important;
+      box-shadow:0 18px 54px rgba(113,84,118,.13) !important;
+    }
+
+    .builder-kicker{
+      color:#e488b2 !important;
+    }
+
+    .selected-count strong{
+      color:#ee88b5 !important;
+    }
+
+    .language-tabs{
+      background:rgba(255,255,255,.88) !important;
+      border-color:#ead8e6 !important;
+    }
+
+    .lang-btn.active,
+    .primary-action,
+    .combo .add-builder-btn{
+      background:linear-gradient(135deg,var(--pink-strong),#a18ff4,var(--blue-strong)) !important;
+      color:#ffffff !important;
+      box-shadow:0 10px 24px rgba(130,118,208,.2) !important;
+    }
+
+    .builder-fab{
+      background:linear-gradient(135deg,var(--pink-strong),#978ef1,var(--blue-strong)) !important;
+      box-shadow:0 12px 32px rgba(100,101,177,.26) !important;
+    }
+
+    .section{
+      background:rgba(255,255,255,.88) !important;
+      border:1px solid rgba(255,255,255,.98) !important;
+      box-shadow:0 16px 48px rgba(112,84,117,.11) !important;
+    }
+
+    .section:nth-of-type(even){
+      background:
+        linear-gradient(135deg,rgba(255,252,254,.94),rgba(245,250,255,.94)) !important;
+    }
+
+    .section h2{
+      color:#5d5262 !important;
+    }
+
+    .section h2::after{
+      content:"";
+      display:block;
+      width:54px;
+      height:5px;
+      margin-top:9px;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--pink),var(--blue));
+    }
+
+    .group{
+      background:
+        linear-gradient(135deg,rgba(255,249,252,.8),rgba(245,250,255,.8)) !important;
+      border-color:#eaddea !important;
+    }
+
+    .group h3{
+      color:#736174 !important;
+    }
+
+    .chip{
+      color:#605363 !important;
+      background:linear-gradient(135deg,#ffffff,#fffafd) !important;
+      border:1px solid #eadce7 !important;
+      box-shadow:0 4px 12px rgba(110,83,113,.04);
+    }
+
+    .chip:hover{
+      border-color:#f3a7c7 !important;
+      background:linear-gradient(135deg,#fff2f8,#eef8ff) !important;
+      box-shadow:0 8px 20px rgba(116,93,143,.1) !important;
+    }
+
+    .chip.selected{
+      color:#ffffff !important;
+      border-color:transparent !important;
+      background:linear-gradient(135deg,var(--pink-strong),#a68cf2,var(--blue-strong)) !important;
+      box-shadow:0 9px 22px rgba(129,111,203,.2) !important;
+    }
+
+    .copy-section{
+      color:#8b6680 !important;
+      background:linear-gradient(135deg,#fff5fa,#eef8ff) !important;
+      border-color:#ead5e2 !important;
+    }
+
+    .copy-section:hover{
+      color:#ffffff !important;
+      border-color:transparent !important;
+      background:linear-gradient(135deg,var(--pink-strong),var(--blue-strong)) !important;
+    }
+
+    .combo{
+      background:
+        linear-gradient(135deg,rgba(255,237,246,.82),rgba(234,246,255,.86)),
+        #ffffff !important;
+      border-color:#e8dce8 !important;
+      box-shadow:0 12px 30px rgba(111,86,118,.08);
+    }
+
+    .combo::before{
+      background:linear-gradient(135deg,var(--pink-soft),var(--blue-soft)) !important;
+    }
+
+    .combo-text{
+      background:rgba(255,255,255,.9) !important;
+      border:1px solid rgba(235,221,232,.75);
+    }
+
+    .combo-actions .direct-copy-btn{
+      background:linear-gradient(135deg,#85bdf4,#9f8dea) !important;
+      border-color:transparent !important;
+    }
+
+    .combo-actions .direct-copy-btn:hover{
+      background:linear-gradient(135deg,#72afea,#8e7ee5) !important;
+    }
+
+    .tip,
+    .builder-note{
+      background:linear-gradient(135deg,#fff4f9,#f1f9ff) !important;
+      border-left-color:#f29ac0 !important;
+      color:#705d6b !important;
+    }
+
+    .prompt-output{
+      border-color:#ead8e5 !important;
+      background:rgba(255,255,255,.96) !important;
+    }
+
+    .prompt-output:focus{
+      border-color:#f29bc1 !important;
+      box-shadow:0 0 0 4px rgba(242,155,193,.12) !important;
+    }
+
+    footer{
+      color:#887989 !important;
+    }
+
+    @media(max-width:560px){
+      .hero h1::before,
+      .hero h1::after{
+        margin-left:7px;
+        margin-right:7px;
+      }
+    }
+
+    /* 手機版完整最佳化 */
+    html{
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+      scroll-padding-top:14px;
+    }
+
+    body{
+      overflow-x:hidden;
+      min-width:0;
+      padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    button,
+    a,
+    .chip{
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+
+    button{
+      cursor:pointer;
+    }
+
+    .section,
+    .builder-shell,
+    .combo,
+    .group{
+      min-width:0;
+    }
+
+    .nav{
+      -webkit-overflow-scrolling:touch;
+      scroll-snap-type:x proximity;
+      overscroll-behavior-x:contain;
+    }
+
+    .nav a{
+      scroll-snap-align:start;
+      min-height:42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+    }
+
+    .chip{
+      min-height:44px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .combo-actions button,
+    .builder-actions button,
+    .lang-btn,
+    .copy-section{
+      min-height:48px;
+    }
+
+    .prompt-output{
+      font-size:16px !important;
+      -webkit-appearance:none;
+      appearance:none;
+    }
+
+    .builder-fab{
+      bottom:calc(14px + env(safe-area-inset-bottom)) !important;
+      right:14px !important;
+      min-height:48px;
+      padding:12px 17px !important;
+    }
+
+    #prompt-builder,
+    .section{
+      scroll-margin-top:14px;
+    }
+
+    @media(max-width:760px){
+      .hero{
+        padding:42px 16px 20px !important;
+      }
+
+      .hero h1{
+        font-size:clamp(32px,10vw,48px) !important;
+        line-height:1.14 !important;
+      }
+
+      .hero h1::before,
+      .hero h1::after{
+        font-size:.44em !important;
+        margin-left:6px !important;
+        margin-right:6px !important;
+      }
+
+      .nav{
+        margin-top:10px !important;
+        padding:0 14px 4px !important;
+        gap:7px !important;
+      }
+
+      main{
+        margin-top:18px !important;
+        padding:0 12px !important;
+      }
+
+      .builder-shell{
+        margin-bottom:18px !important;
+        padding:17px !important;
+        border-radius:22px !important;
+      }
+
+      .builder-top{
+        gap:12px !important;
+      }
+
+      .builder-top h2{
+        font-size:24px !important;
+      }
+
+      .builder-top p{
+        font-size:13px !important;
+      }
+
+      .selected-count{
+        min-width:0 !important;
+      }
+
+      .language-tabs{
+        display:grid !important;
+        grid-template-columns:1fr 1fr;
+        width:100%;
+      }
+
+      .lang-btn{
+        width:100%;
+      }
+
+      .prompt-output{
+        min-height:220px !important;
+        padding:15px !important;
+        border-radius:16px !important;
+      }
+
+      .builder-actions{
+        position:sticky;
+        bottom:calc(8px + env(safe-area-inset-bottom));
+        z-index:8;
+        display:grid !important;
+        grid-template-columns:1.25fr 1fr 1fr;
+        gap:8px !important;
+        margin:12px -4px 0 !important;
+        padding:8px 4px;
+        border-radius:16px;
+        background:linear-gradient(
+          180deg,
+          rgba(255,248,252,.18),
+          rgba(255,248,252,.94) 26%,
+          rgba(244,250,255,.98)
+        );
+        backdrop-filter:blur(12px);
+        -webkit-backdrop-filter:blur(12px);
+      }
+
+      .builder-actions button{
+        padding:10px 8px !important;
+        font-size:13px !important;
+      }
+
+      .section{
+        margin:16px 0 !important;
+        padding:18px 15px !important;
+        border-radius:22px !important;
+      }
+
+      .section-head{
+        gap:10px !important;
+        margin-bottom:14px !important;
+      }
+
+      .section h2{
+        font-size:22px !important;
+        line-height:1.35;
+      }
+
+      .section-desc{
+        font-size:13px !important;
+      }
+
+      .groups,
+      .combo-grid{
+        grid-template-columns:1fr !important;
+        gap:12px !important;
+      }
+
+      .group{
+        padding:14px !important;
+        border-radius:17px !important;
+      }
+
+      .chips{
+        gap:7px !important;
+      }
+
+      .chip{
+        padding:9px 10px !important;
+        font-size:14px !important;
+      }
+
+      .combo{
+        padding:17px !important;
+        border-radius:19px !important;
+      }
+
+      .combo h3{
+        font-size:18px !important;
+      }
+
+      .combo-text{
+        min-height:0 !important;
+        padding:14px !important;
+        font-size:14px !important;
+        line-height:1.75 !important;
+      }
+
+      /* 手機上仍保留「加入組裝器 / 直接複製」並排 */
+      .combo-actions{
+        grid-template-columns:1fr 1fr !important;
+        gap:8px !important;
+      }
+
+      .combo-actions button{
+        min-width:0;
+        padding:10px 7px !important;
+        font-size:13px !important;
+        white-space:nowrap;
+      }
+
+      footer{
+        padding:0 18px calc(84px + env(safe-area-inset-bottom)) !important;
+      }
+    }
+
+    @media(max-width:380px){
+      .hero h1{
+        font-size:30px !important;
+      }
+
+      .combo-actions button{
+        font-size:12px !important;
+        letter-spacing:0 !important;
+      }
+
+      .builder-actions{
+        grid-template-columns:1fr 1fr !important;
+      }
+
+      .builder-actions .primary-action{
+        grid-column:1 / -1;
+      }
+    }
+
+    /* 手機版導覽標籤改為自動換行，避免卡住或被切掉 */
+    @media(max-width:760px){
+      .nav{
+        display:flex !important;
+        flex-wrap:wrap !important;
+        overflow:visible !important;
+        white-space:normal !important;
+        scroll-snap-type:none !important;
+        -webkit-overflow-scrolling:auto !important;
+        overscroll-behavior-x:auto !important;
+        gap:8px !important;
+        padding:0 14px 10px !important;
+        margin:8px auto 0 !important;
+        justify-content:flex-start !important;
+      }
+
+      .nav a{
+        flex:0 0 auto !important;
+        min-height:40px !important;
+        padding:9px 13px !important;
+        white-space:nowrap !important;
+        scroll-snap-align:none !important;
+        font-size:14px !important;
+      }
+    }
+
+    @media(max-width:430px){
+      .nav{
+        gap:7px !important;
+      }
+
+      .nav a{
+        padding:8px 11px !important;
+        font-size:13px !important;
+      }
+    }
+
+    /* =========================================================
+       Libby 可愛藍粉糖果版
+       ========================================================= */
+
+    :root{
+      --candy-pink:#ff9fc7;
+      --candy-pink-deep:#ff78ae;
+      --candy-pink-soft:#ffe5f0;
+      --candy-blue:#8ecbff;
+      --candy-blue-deep:#66b5f5;
+      --candy-blue-soft:#e4f3ff;
+      --candy-purple:#b59af3;
+      --candy-cream:#fffafd;
+      --candy-text:#514653;
+      --candy-line:#ecdde9;
+    }
+
+    body{
+      background:
+        radial-gradient(circle at 7% 7%, rgba(255,185,215,.48), transparent 25%),
+        radial-gradient(circle at 92% 8%, rgba(145,208,255,.46), transparent 26%),
+        radial-gradient(circle at 18% 66%, rgba(255,220,236,.36), transparent 25%),
+        radial-gradient(circle at 83% 72%, rgba(202,231,255,.38), transparent 26%),
+        linear-gradient(180deg,#fff8fc 0%,#f4faff 100%) !important;
+    }
+
+    .hero{
+      isolation:isolate;
+    }
+
+    .hero::before{
+      width:230px !important;
+      height:230px !important;
+      left:2% !important;
+      top:-116px !important;
+      background:
+        radial-gradient(circle,rgba(255,188,218,.82),rgba(255,188,218,0) 70%) !important;
+    }
+
+    .hero::after{
+      width:240px !important;
+      height:240px !important;
+      right:1% !important;
+      top:-122px !important;
+      background:
+        radial-gradient(circle,rgba(151,213,255,.8),rgba(151,213,255,0) 70%) !important;
+    }
+
+    .hero h1{
+      filter:drop-shadow(0 12px 24px rgba(224,132,174,.13));
+    }
+
+    .hero h1 .gradient-text{
+      color:#f4a0c4 !important;
+      -webkit-text-fill-color:#f4a0c4 !important;
+      text-shadow:
+        0 3px 0 #ffffff,
+        0 7px 0 rgba(255,227,239,.82),
+        0 14px 28px rgba(232,142,183,.2) !important;
+    }
+
+    .hero h1::before{
+      content:"✦" !important;
+      color:#8ecbff !important;
+      animation:libbyTwinkle 2.8s ease-in-out infinite;
+    }
+
+    .hero h1::after{
+      content:"♡" !important;
+      color:#ffb3d2 !important;
+      animation:libbyFloat 3.2s ease-in-out infinite;
+    }
+
+    @keyframes libbyTwinkle{
+      0%,100%{transform:scale(1) rotate(0deg);opacity:.75}
+      50%{transform:scale(1.18) rotate(10deg);opacity:1}
+    }
+
+    @keyframes libbyFloat{
+      0%,100%{transform:translateY(0) rotate(-3deg)}
+      50%{transform:translateY(-4px) rotate(4deg)}
+    }
+
+    .nav{
+      position:relative;
+    }
+
+    .nav a{
+      border-radius:999px !important;
+      padding:10px 15px !important;
+      color:#67596b !important;
+      background:
+        linear-gradient(135deg,rgba(255,246,251,.98),rgba(238,248,255,.98)) !important;
+      border:1px solid rgba(229,214,227,.95) !important;
+      box-shadow:
+        0 6px 16px rgba(105,82,112,.06),
+        inset 0 1px 0 rgba(255,255,255,.95);
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .nav a:hover{
+      transform:translateY(-2px) scale(1.02);
+      box-shadow:0 10px 22px rgba(107,95,156,.14);
+    }
+
+    .builder-shell{
+      position:relative;
+      overflow:hidden;
+      border:2px solid rgba(255,255,255,.96) !important;
+      border-radius:32px !important;
+      background:
+        linear-gradient(145deg,rgba(255,243,249,.97),rgba(238,249,255,.97)) !important;
+      box-shadow:
+        0 22px 56px rgba(118,85,121,.13),
+        inset 0 1px 0 rgba(255,255,255,.95) !important;
+    }
+
+    .builder-shell::before,
+    .builder-shell::after{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      pointer-events:none;
+      opacity:.46;
+      filter:blur(1px);
+    }
+
+    .builder-shell::before{
+      width:130px;
+      height:130px;
+      right:-45px;
+      top:-45px;
+      background:radial-gradient(circle,rgba(255,183,214,.7),transparent 70%);
+    }
+
+    .builder-shell::after{
+      width:120px;
+      height:120px;
+      left:-45px;
+      bottom:-45px;
+      background:radial-gradient(circle,rgba(154,214,255,.68),transparent 70%);
+    }
+
+    .builder-top,
+    .language-tabs,
+    .prompt-output,
+    .builder-actions,
+    .builder-note{
+      position:relative;
+      z-index:1;
+    }
+
+    .builder-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:6px 11px;
+      border-radius:999px;
+      color:#d96f9f !important;
+      background:linear-gradient(135deg,#fff1f7,#edf8ff);
+      border:1px solid #f0d8e4;
+      box-shadow:0 5px 13px rgba(115,86,119,.06);
+    }
+
+    .builder-kicker::before{
+      content:"✿";
+      color:#8ecbff;
+    }
+
+    .builder-top h2{
+      color:#544858;
+      text-shadow:0 2px 0 rgba(255,255,255,.95);
+    }
+
+    .selected-count{
+      border-radius:22px !important;
+      background:
+        linear-gradient(135deg,rgba(255,246,251,.96),rgba(239,249,255,.96)) !important;
+      border:1px solid #ecdde8 !important;
+      box-shadow:
+        0 8px 20px rgba(109,82,115,.07),
+        inset 0 1px 0 rgba(255,255,255,.95);
+    }
+
+    .selected-count strong{
+      color:#ee82b3 !important;
+      text-shadow:0 2px 0 white;
+    }
+
+    .language-tabs{
+      border-radius:19px !important;
+      padding:6px !important;
+      background:rgba(255,255,255,.9) !important;
+      box-shadow:0 8px 20px rgba(109,82,115,.06);
+    }
+
+    .lang-btn{
+      border-radius:14px !important;
+    }
+
+    .lang-btn.active{
+      background:
+        linear-gradient(135deg,#ff8fbe 0%,#b398f1 48%,#74bdf7 100%) !important;
+      box-shadow:
+        0 10px 22px rgba(124,108,198,.2),
+        inset 0 1px 0 rgba(255,255,255,.28) !important;
+    }
+
+    .prompt-output{
+      border-radius:24px !important;
+      border:2px solid #efdfeb !important;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,251,253,.97)) !important;
+      box-shadow:
+        inset 0 2px 8px rgba(108,82,110,.035),
+        0 8px 22px rgba(105,80,110,.05);
+    }
+
+    .prompt-output::placeholder{
+      color:#b6abb4;
+    }
+
+    .builder-actions{
+      gap:10px !important;
+    }
+
+    .builder-actions button{
+      border-radius:999px !important;
+      box-shadow:0 8px 20px rgba(111,90,143,.1);
+      transition:transform .16s ease, box-shadow .16s ease;
+    }
+
+    .builder-actions button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 11px 24px rgba(111,90,143,.14);
+    }
+
+    .primary-action{
+      background:
+        linear-gradient(135deg,#ff82b6,#a994f1,#72bdf6) !important;
+    }
+
+    .secondary-action{
+      color:#7a6170 !important;
+      border:1px solid #ead8e4 !important;
+      background:linear-gradient(135deg,#fff7fb,#eff8ff) !important;
+    }
+
+    .ghost-action{
+      color:#7a6d76 !important;
+      border:1px dashed #dcbfd0 !important;
+      background:rgba(255,255,255,.66) !important;
+    }
+
+    .builder-note{
+      border-radius:17px !important;
+      padding:13px 15px !important;
+      background:
+        linear-gradient(135deg,rgba(255,242,248,.95),rgba(238,248,255,.95)) !important;
+      border:1px solid #eadce7 !important;
+      border-left:5px solid #f09bc1 !important;
+    }
+
+    .section{
+      position:relative;
+      overflow:hidden;
+      border-radius:30px !important;
+      border:2px solid rgba(255,255,255,.96) !important;
+      background:rgba(255,255,255,.9) !important;
+      box-shadow:
+        0 18px 45px rgba(108,82,114,.1),
+        inset 0 1px 0 rgba(255,255,255,.96) !important;
+    }
+
+    .section::before{
+      content:"";
+      position:absolute;
+      width:140px;
+      height:140px;
+      right:-70px;
+      top:-70px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(255,204,225,.45),transparent 70%);
+      pointer-events:none;
+    }
+
+    .section:nth-of-type(even)::before{
+      background:radial-gradient(circle,rgba(188,225,255,.48),transparent 70%);
+    }
+
+    .section-head{
+      position:relative;
+      z-index:1;
+    }
+
+    .section h2{
+      display:inline-flex;
+      align-items:center;
+      gap:9px;
+      padding:8px 14px 9px;
+      border-radius:18px;
+      color:#5b4e5e !important;
+      background:
+        linear-gradient(135deg,rgba(255,235,244,.98),rgba(231,245,255,.98));
+      border:1px solid #ead8e4;
+      box-shadow:
+        0 8px 18px rgba(110,84,116,.07),
+        inset 0 1px 0 rgba(255,255,255,.96);
+    }
+
+    .section h2::before{
+      content:"♡";
+      color:#ef8db7;
+      font-size:.72em;
+    }
+
+    .section h2::after{
+      display:none !important;
+    }
+
+    .section-desc{
+      margin-left:3px !important;
+    }
+
+    .group{
+      position:relative;
+      overflow:hidden;
+      border-radius:22px !important;
+      background:
+        linear-gradient(145deg,rgba(255,250,253,.94),rgba(244,250,255,.94)) !important;
+      border:1px solid #eadde8 !important;
+      box-shadow:
+        0 10px 24px rgba(104,82,111,.06),
+        inset 0 1px 0 rgba(255,255,255,.95);
+    }
+
+    .group h3{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:6px 10px;
+      border-radius:13px;
+      color:#6f5d72 !important;
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(233,220,231,.8);
+    }
+
+    .group h3::before{
+      content:"✦";
+      color:#86c5f7;
+      font-size:.75em;
+    }
+
+    .chip{
+      position:relative;
+      overflow:hidden;
+      border-radius:999px !important;
+      padding:10px 14px !important;
+      color:#615363 !important;
+      background:
+        linear-gradient(145deg,#ffffff,#fff8fb) !important;
+      border:1px solid #eadce7 !important;
+      box-shadow:
+        0 5px 13px rgba(105,82,111,.045),
+        inset 0 1px 0 rgba(255,255,255,.96);
+      transition:
+        transform .16s ease,
+        box-shadow .16s ease,
+        background .16s ease,
+        color .16s ease;
+    }
+
+    .chip::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(110deg,transparent 18%,rgba(255,255,255,.65) 42%,transparent 64%);
+      transform:translateX(-130%);
+      transition:transform .45s ease;
+      pointer-events:none;
+    }
+
+    .chip:hover{
+      transform:translateY(-2px);
+      background:
+        linear-gradient(135deg,#fff0f7,#edf8ff) !important;
+      box-shadow:0 9px 20px rgba(116,92,145,.11) !important;
+    }
+
+    .chip:hover::after{
+      transform:translateX(130%);
+    }
+
+    .chip.selected{
+      padding-left:35px !important;
+      background:
+        linear-gradient(135deg,#ff86b8 0%,#ae96ef 52%,#72bdf5 100%) !important;
+      box-shadow:
+        0 10px 22px rgba(129,111,203,.2),
+        inset 0 1px 0 rgba(255,255,255,.28) !important;
+    }
+
+    .chip.selected::before{
+      content:"♡";
+      position:absolute;
+      left:13px;
+      top:50%;
+      transform:translateY(-50%);
+      color:white;
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .copy-section{
+      border-radius:999px !important;
+      padding:10px 15px !important;
+      box-shadow:0 7px 16px rgba(105,82,111,.06);
+    }
+
+    .combo{
+      position:relative;
+      border-radius:25px !important;
+      border:1px solid #eadce7 !important;
+      background:
+        linear-gradient(145deg,rgba(255,240,247,.88),rgba(235,247,255,.9)),
+        #ffffff !important;
+      box-shadow:
+        0 14px 31px rgba(108,83,116,.08),
+        inset 0 1px 0 rgba(255,255,255,.96) !important;
+    }
+
+    .combo h3{
+      color:#5e5061 !important;
+    }
+
+    .combo small{
+      display:inline-flex !important;
+      padding:5px 9px;
+      border-radius:999px;
+      color:#8a7180 !important;
+      background:rgba(255,255,255,.7);
+      border:1px solid rgba(235,219,230,.85);
+    }
+
+    .combo-text{
+      border-radius:18px !important;
+      border:1px solid rgba(235,220,231,.84) !important;
+      background:rgba(255,255,255,.9) !important;
+      box-shadow:inset 0 1px 5px rgba(106,82,109,.035);
+    }
+
+    .combo-actions button{
+      border-radius:999px !important;
+      min-height:46px;
+      transition:transform .16s ease, box-shadow .16s ease;
+    }
+
+    .combo-actions button:hover{
+      transform:translateY(-2px);
+    }
+
+    .combo .add-builder-btn{
+      background:
+        linear-gradient(135deg,#ff83b7,#ad96ef,#73bdf6) !important;
+      box-shadow:0 9px 21px rgba(128,112,202,.18) !important;
+    }
+
+    .combo-actions .direct-copy-btn{
+      background:
+        linear-gradient(135deg,#79bdf4,#9b91ef) !important;
+      box-shadow:0 9px 21px rgba(100,123,194,.16) !important;
+    }
+
+    .tip{
+      border-radius:18px !important;
+      background:
+        linear-gradient(135deg,#fff2f8,#eff9ff) !important;
+      border:1px solid #eadce7 !important;
+      border-left:5px solid #f29bc1 !important;
+      box-shadow:0 8px 18px rgba(106,82,110,.05);
+    }
+
+    .builder-fab{
+      border:2px solid rgba(255,255,255,.82) !important;
+      background:
+        linear-gradient(135deg,#ff82b6,#aa95ef,#71bcf6) !important;
+      box-shadow:
+        0 14px 34px rgba(98,97,177,.28),
+        inset 0 1px 0 rgba(255,255,255,.32) !important;
+    }
+
+    .toast{
+      border:1px solid rgba(255,255,255,.18);
+      background:
+        linear-gradient(135deg,rgba(102,86,116,.95),rgba(79,100,137,.95)) !important;
+      box-shadow:0 12px 30px rgba(65,53,71,.22);
+    }
+
+    footer{
+      font-size:13px !important;
+    }
+
+    @media(max-width:760px){
+      .hero{
+        padding-top:38px !important;
+        padding-bottom:18px !important;
+      }
+
+      .hero h1{
+        font-size:clamp(30px,9.5vw,46px) !important;
+      }
+
+      .section{
+        border-radius:24px !important;
+      }
+
+      .section h2{
+        width:100%;
+        justify-content:flex-start;
+        border-radius:16px;
+        padding:8px 12px 9px;
+      }
+
+      .group{
+        border-radius:19px !important;
+      }
+
+      .chip{
+        padding:9px 12px !important;
+      }
+
+      .chip.selected{
+        padding-left:32px !important;
+      }
+
+      .combo{
+        border-radius:21px !important;
+      }
+
+      .builder-shell{
+        border-radius:25px !important;
+      }
+
+      .prompt-output{
+        border-radius:19px !important;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after{
+        animation:none !important;
+        transition:none !important;
+        scroll-behavior:auto !important;
+      }
+    }
+</style>
+<meta content="#fff3f8" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="default" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/></head>
+<body>
+<header aria-label="Libby 的生圖詞庫" class="hero">
+<h1><span class="gradient-text">Libby 的生圖詞庫</span></h1>
+</header>
+<nav class="nav"><a href="#prompt-builder">提示詞組裝器</a>
+<a href="#style">風格</a>
+<a href="#lens">鏡頭</a>
+<a href="#light">光線</a>
+<a href="#color">色調</a>
+<a href="#composition">構圖</a>
+<a href="#texture">質感</a>
+<a href="#negative">避雷詞</a>
+<a href="#universal-combos">漂亮萬用組合</a>
+<a href="#combos">情境推薦組合</a>
+</nav>
+<main><section class="builder-shell" id="prompt-builder">
+<div class="builder-top">
+<div>
+<div class="builder-kicker">PROMPT BUILDER</div>
+<h2>提示詞組裝器</h2>
+<p>點選下方詞彙或完整組合，它們會依序加入這個框框。再點一次即可取消。</p>
+</div>
+<div class="selected-count"><strong id="selectedCount">0</strong><span>個已選項目</span></div>
+</div>
+<div aria-label="輸出語言" class="language-tabs" role="tablist">
+<button class="lang-btn active" data-lang="zh" onclick="setLanguage('zh')" type="button">中文版本</button>
+<button class="lang-btn" data-lang="en" onclick="setLanguage('en')" type="button">English Version</button>
+</div>
+<textarea class="prompt-output" id="promptOutput" placeholder="點選下方的漂亮詞，這裡會自動組成完整提示詞。也可以直接在框內修改內容。" spellcheck="false"></textarea>
+<div class="builder-actions">
+<button class="primary-action" onclick="copyPromptOutput()" type="button">複製整段</button>
+<button class="secondary-action" onclick="undoLast()" type="button">移除最後一個</button>
+<button class="ghost-action" onclick="clearBuilder()" type="button">清空全部</button>
+</div>
+<div class="builder-note"><b>使用方式：</b>先選風格、鏡頭、光線、構圖與質感，再加入背景或限制詞。切換語言時，框內會自動換成對應版本。</div>
+</section>
+<section class="section searchable-block" id="style">
+<div class="section-head">
+<div>
+<h2>01｜畫面風格</h2>
+<p class="section-desc">決定整張圖的個性，是柔軟日常、青春純愛，還是高級冷感。</p>
+</div>
+<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
+</div>
+<div class="groups">
+<div class="group">
+<h3>韓系寫真</h3>
+<div class="chips">
+<button class="chip" data-en="Korean-style dreamy portrait photography" title="點一下加入組裝器，再點一次取消">韓式唯美寫真</button><button class="chip" data-en="fresh Korean-style portrait photography" title="點一下加入組裝器，再點一次取消">韓系清新寫真</button>
+<button class="chip" data-en="Korean-style natural lifestyle photography" title="點一下加入組裝器，再點一次取消">韓系自然生活感攝影</button><button class="chip" data-en="Korean-style creamy-toned portrait photography" title="點一下加入組裝器，再點一次取消">韓系奶油感寫真</button>
+<button class="chip" data-en="Korean minimalist luxury aesthetic" title="點一下加入組裝器，再點一次取消">韓系極簡高級感</button><button class="chip" data-en="Korean-style wedding photography" title="點一下加入組裝器，再點一次取消">韓系婚紗攝影</button>
+<button class="chip" data-en="Korean-style soft-haze portrait" title="點一下加入組裝器，再點一次取消">韓系柔霧人像</button><button class="chip" data-en="K-drama still aesthetic" title="點一下加入組裝器，再點一次取消">韓劇劇照感</button>
+<button class="chip" data-en="K-pop idol concept photography" title="點一下加入組裝器，再點一次取消">韓國偶像概念照</button><button class="chip" data-en="Korean youthful cinematic aesthetic" title="點一下加入組裝器，再點一次取消">韓系青春電影感</button>
+</div>
+</div>
+<div class="group">
+<h3>日系寫真</h3>
+<div class="chips">
+<button class="chip" data-en="Japanese-style luminous portrait photography" title="點一下加入組裝器，再點一次取消">日系清透寫真</button><button class="chip" data-en="Japanese airy photography" title="點一下加入組裝器，再點一次取消">日系空氣感攝影</button>
+<button class="chip" data-en="Japanese youthful cinematic aesthetic" title="點一下加入組裝器，再點一次取消">日系青春電影感</button><button class="chip" data-en="Japanese-style candid lifestyle photography" title="點一下加入組裝器，再點一次取消">日系生活抓拍</button>
+<button class="chip" data-en="Japanese literary portrait photography" title="點一下加入組裝器，再點一次取消">日系文藝寫真</button><button class="chip" data-en="Japanese-style film photography" title="點一下加入組裝器，再點一次取消">日系膠片攝影</button>
+<button class="chip" data-en="Japanese translucent and luminous aesthetic" title="點一下加入組裝器，再點一次取消">日系透明感</button><button class="chip" data-en="Japanese pure-romance atmosphere" title="點一下加入組裝器，再點一次取消">日系純愛氛圍</button>
+<button class="chip" data-en="Japanese healing-style photography" title="點一下加入組裝器，再點一次取消">日系治癒系攝影</button><button class="chip" data-en="Japanese-style negative-space composition" title="點一下加入組裝器，再點一次取消">日系留白構圖</button>
+</div>
+</div>
+<div class="group">
+<h3>電影感</h3>
+<div class="chips">
+<button class="chip" data-en="cinematic film still" title="點一下加入組裝器，再點一次取消">電影劇照</button><button class="chip" data-en="cinematic-quality image" title="點一下加入組裝器，再點一次取消">電影級畫面</button>
+<button class="chip" data-en="cinematic visual storytelling" title="點一下加入組裝器，再點一次取消">電影敘事感</button><button class="chip" data-en="romantic cinematic freeze-frame" title="點一下加入組裝器，再點一次取消">浪漫電影定格</button>
+<button class="chip" data-en="youth romance film aesthetic" title="點一下加入組裝器，再點一次取消">青春愛情電影感</button><button class="chip" data-en="urban romance film aesthetic" title="點一下加入組裝器，再點一次取消">都市愛情電影感</button>
+<button class="chip" data-en="independent film photography style" title="點一下加入組裝器，再點一次取消">獨立電影攝影風格</button><button class="chip" data-en="cinematic depth of field" title="點一下加入組裝器，再點一次取消">電影級景深</button>
+<button class="chip" data-en="cinematic lighting" title="點一下加入組裝器，再點一次取消">電影級光影</button><button class="chip" data-en="cinematic color grading" title="點一下加入組裝器，再點一次取消">電影調色</button>
+</div>
+</div>
+<div class="group">
+<h3>時尚與雜誌感</h3>
+<div class="chips">
+<button class="chip" data-en="high-fashion magazine cover" title="點一下加入組裝器，再點一次取消">高級時尚雜誌封面</button><button class="chip" data-en="luxury advertising campaign" title="點一下加入組裝器，再點一次取消">精品廣告大片</button>
+<button class="chip" data-en="luxury brand editorial portrait" title="點一下加入組裝器，再點一次取消">高奢品牌形象照</button><button class="chip" data-en="editorial fashion photography" title="點一下加入組裝器，再點一次取消">編輯式時尚攝影</button>
+<button class="chip" data-en="cool-toned fashion photography" title="點一下加入組裝器，再點一次取消">冷感時尚攝影</button><button class="chip" data-en="minimalist luxury studio" title="點一下加入組裝器，再點一次取消">極簡高級攝影棚</button>
+<button class="chip" data-en="professional model portrait" title="點一下加入組裝器，再點一次取消">模特兒形象照</button><button class="chip" data-en="luxury jewelry campaign aesthetic" title="點一下加入組裝器，再點一次取消">高級珠寶廣告質感</button>
+</div>
+</div>
+</div>
+</section>
+<section class="section searchable-block" id="lens">
+<div class="section-head">
+<div>
+<h2>02｜鏡頭與景深</h2>
+<p class="section-desc">日常首選 50mm；想帶到更多空間用 35mm；浪漫特寫則用 85mm。</p>
+</div>
+<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
+</div>
+<div class="groups">
+<div class="group">
+<h3>35mm｜環境與故事</h3>
+<div class="chips">
+<button class="chip" data-en="35mm environmental portrait lens" title="點一下加入組裝器，再點一次取消">35mm 環境人像鏡頭</button><button class="chip" data-en="immersive lifestyle setting" title="點一下加入組裝器，再點一次取消">沉浸式生活場景</button>
+<button class="chip" data-en="natural spatial perspective" title="點一下加入組裝器，再點一次取消">自然空間透視</button><button class="chip" data-en="cinematic documentary aesthetic" title="點一下加入組裝器，再點一次取消">電影紀實感</button>
+<button class="chip" data-en="full presentation of the subject and environment" title="點一下加入組裝器，再點一次取消">人物與環境完整呈現</button><button class="chip" data-en="dynamic wide-angle candid shot" title="點一下加入組裝器，再點一次取消">動態廣角抓拍</button>
+</div>
+</div>
+<div class="group">
+<h3>50mm｜最自然日常</h3>
+<div class="chips">
+<button class="chip" data-en="50mm standard portrait lens" title="點一下加入組裝器，再點一次取消">50mm 標準人像鏡頭</button><button class="chip" data-en="natural eye-level perspective" title="點一下加入組裝器，再點一次取消">自然人眼視角</button>
+<button class="chip" data-en="authentic lifestyle photography" title="點一下加入組裝器，再點一次取消">真實生活感攝影</button><button class="chip" data-en="50mm environmental portrait" title="點一下加入組裝器，再點一次取消">50mm 環境人像</button>
+<button class="chip" data-en="natural proportions" title="點一下加入組裝器，再點一次取消">自然比例</button><button class="chip" data-en="lifestyle documentary aesthetic" title="點一下加入組裝器，再點一次取消">生活紀實感</button>
+</div>
+</div>
+<div class="group">
+<h3>85mm｜浪漫人物特寫</h3>
+<div class="chips">
+<button class="chip" data-en="85mm portrait lens" title="點一下加入組裝器，再點一次取消">85mm 人像攝影鏡頭</button><button class="chip" data-en="85mm wide-aperture portrait" title="點一下加入組裝器，再點一次取消">85mm 大光圈人像</button>
+<button class="chip" data-en="medium-telephoto portrait compression" title="點一下加入組裝器，再點一次取消">中長焦人像壓縮感</button><button class="chip" data-en="soft and beautiful background bokeh" title="點一下加入組裝器，再點一次取消">柔美背景散景</button>
+<button class="chip" data-en="natural couple close-up" title="點一下加入組裝器，再點一次取消">自然情侶特寫</button><button class="chip" data-en="capturing subtle expressions" title="點一下加入組裝器，再點一次取消">捕捉細微表情</button>
+</div>
+</div>
+<div class="group">
+<h3>105mm 與特殊鏡頭</h3>
+<div class="chips">
+<button class="chip" data-en="105mm medium-telephoto portrait lens" title="點一下加入組裝器，再點一次取消">105mm 中長焦人像鏡頭</button><button class="chip" data-en="105mm creamy bokeh" title="點一下加入組裝器，再點一次取消">105mm 奶油散景</button>
+<button class="chip" data-en="natural candid shot from a distance" title="點一下加入組裝器，再點一次取消">遠距離自然抓拍感</button><button class="chip" data-en="telephoto background compression" title="點一下加入組裝器，再點一次取消">長焦壓縮背景</button>
+<button class="chip" data-en="8mm ultra-wide fisheye lens" title="點一下加入組裝器，再點一次取消">8mm 超廣角魚眼鏡頭</button><button class="chip" data-en="Y2K fisheye selfie" title="點一下加入組裝器，再點一次取消">Y2K 魚眼自拍</button>
+</div>
+</div>
+<div class="group">
+<h3>光圈與景深</h3>
+<div class="chips">
+<button class="chip" data-en="f/1.2 ultra-wide aperture" title="點一下加入組裝器，再點一次取消">f/1.2 超大光圈</button><button class="chip" data-en="f/1.4 wide aperture" title="點一下加入組裝器，再點一次取消">f/1.4 大光圈</button>
+<button class="chip" data-en="f/1.8 shallow depth of field" title="點一下加入組裝器，再點一次取消">f/1.8 淺景深</button><button class="chip" data-en="creamy smooth bokeh" title="點一下加入組裝器，再點一次取消">奶油般柔滑散景</button>
+<button class="chip" data-en="soft-focus background" title="點一下加入組裝器，再點一次取消">背景柔焦</button><button class="chip" data-en="blurred foreground" title="點一下加入組裝器，再點一次取消">前景虛化</button>
+<button class="chip" data-en="smooth depth-of-field transition" title="點一下加入組裝器，再點一次取消">柔和景深過渡</button><button class="chip" data-en="sharp subject with a blurred background" title="點一下加入組裝器，再點一次取消">主體清晰、背景模糊</button>
+</div>
+</div>
+<div class="group">
+<h3>取景範圍</h3>
+<div class="chips">
+<button class="chip" data-en="extreme facial close-up" title="點一下加入組裝器，再點一次取消">臉部大特寫</button><button class="chip" data-en="close-up framed above the collarbone" title="點一下加入組裝器，再點一次取消">鎖骨以上特寫</button>
+<button class="chip" data-en="upper-body portrait framed above the chest" title="點一下加入組裝器，再點一次取消">胸口以上半身照</button><button class="chip" data-en="medium shot framed above the waist" title="點一下加入組裝器，再點一次取消">腰部以上中景</button>
+<button class="chip" data-en="three-quarter portrait framed above the knees" title="點一下加入組裝器，再點一次取消">膝蓋以上七分身</button><button class="chip" data-en="full-body portrait" title="點一下加入組裝器，再點一次取消">人物全身照</button>
+<button class="chip" data-en="long-shot environmental portrait" title="點一下加入組裝器，再點一次取消">遠景環境人像</button><button class="chip" data-en="extreme long-shot cinematic composition" title="點一下加入組裝器，再點一次取消">超遠景電影構圖</button>
+</div>
+</div>
+</div>
+<div class="tip"><b>鏡頭小提醒：</b>想要自然生活感，優先選 35mm 或 50mm；想要人物更精緻、背景更柔，選 85mm；想做誇張潮流感，再使用超廣角或魚眼鏡頭。</div>
+</section>
+<section class="section searchable-block" id="light">
+<div class="section-head">
+<div>
+<h2>03｜光線</h2>
+<p class="section-desc">漂亮的光比單純加上「8K」更有用。光線決定溫度、情緒與立體感。</p>
+</div>
+<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
+</div>
+<div class="groups">
+<div class="group">
+<h3>自然光</h3>
+<div class="chips">
+<button class="chip" data-en="soft natural light" title="點一下加入組裝器，再點一次取消">柔和自然光</button><button class="chip" data-en="morning window light" title="點一下加入組裝器，再點一次取消">清晨窗邊光</button>
+<button class="chip" data-en="slanting afternoon sunlight" title="點一下加入組裝器，再點一次取消">午後斜射陽光</button><button class="chip" data-en="soft overcast light" title="點一下加入組裝器，再點一次取消">陰天柔光</button>
+<button class="chip" data-en="diffused light through clouds" title="點一下加入組裝器，再點一次取消">雲層漫射光</button><button class="chip" data-en="soft daylight filtered through curtains" title="點一下加入組裝器，再點一次取消">窗簾過濾後的柔光</button>
+<button class="chip" data-en="dappled tree shadows" title="點一下加入組裝器，再點一次取消">細碎樹影</button><button class="chip" data-en="bright summer daylight" title="點一下加入組裝器，再點一次取消">夏日明亮日光</button>
+</div>
+</div>
+<div class="group">
+<h3>逆光與光暈</h3>
+<div class="chips">
+<button class="chip" data-en="warm sunset backlighting" title="點一下加入組裝器，再點一次取消">暖色夕陽逆光</button><button class="chip" data-en="strong rim lighting" title="點一下加入組裝器，再點一次取消">強烈輪廓光</button>
+<button class="chip" data-en="backlit translucent hair strands" title="點一下加入組裝器，再點一次取消">髮絲透光</button><button class="chip" data-en="golden hair light" title="點一下加入組裝器，再點一次取消">金色髮絲光</button>
+<button class="chip" data-en="backlit glow" title="點一下加入組裝器，再點一次取消">逆光光暈</button><button class="chip" data-en="soft lens flare" title="點一下加入組裝器，再點一次取消">柔和鏡頭耀光</button>
+<button class="chip" data-en="glowing edges around the subject" title="點一下加入組裝器，再點一次取消">人物邊緣發亮</button><button class="chip" data-en="sunlit dust particles in the air" title="點一下加入組裝器，再點一次取消">空氣中的微塵被陽光照亮</button>
+</div>
+</div>
+<div class="group">
+<h3>攝影棚光線</h3>
+<div class="chips">
+<button class="chip" data-en="softbox lighting" title="點一下加入組裝器，再點一次取消">柔光箱照明</button><button class="chip" data-en="soft side lighting" title="點一下加入組裝器，再點一次取消">側面柔光</button>
+<button class="chip" data-en="butterfly lighting" title="點一下加入組裝器，再點一次取消">蝴蝶光</button><button class="chip" data-en="Rembrandt lighting" title="點一下加入組裝器，再點一次取消">倫勃朗光</button>
+<button class="chip" data-en="refined rim lighting" title="點一下加入組裝器，再點一次取消">高級輪廓光</button><button class="chip" data-en="low-key dramatic lighting" title="點一下加入組裝器，再點一次取消">低調戲劇光</button>
+<button class="chip" data-en="bright high-key photography" title="點一下加入組裝器，再點一次取消">明亮高調攝影</button><button class="chip" data-en="dark luxury lighting" title="點一下加入組裝器，再點一次取消">暗調精品光影</button>
+</div>
+</div>
+<div class="group">
+<h3>夜晚與雨天</h3>
+<div class="chips">
+<button class="chip" data-en="urban neon lighting" title="點一下加入組裝器，再點一次取消">城市霓虹燈光</button><button class="chip" data-en="warm streetlight glow" title="點一下加入組裝器，再點一次取消">路燈暖光</button>
+<button class="chip" data-en="wet pavement reflections on a rainy night" title="點一下加入組裝器，再點一次取消">雨夜濕地反光</button><button class="chip" data-en="cool television screen light" title="點一下加入組裝器，再點一次取消">電視螢幕冷光</button>
+<button class="chip" data-en="warm yellow indoor lighting" title="點一下加入組裝器，再點一次取消">室內暖黃色燈光</button><button class="chip" data-en="low-light photography" title="點一下加入組裝器，再點一次取消">低照度攝影</button>
+<button class="chip" data-en="rain streaks on the window" title="點一下加入組裝器，再點一次取消">窗外雨痕</button><button class="chip" data-en="interplay of warm and cool lighting" title="點一下加入組裝器，再點一次取消">冷暖光交錯</button>
+</div>
+</div>
+</div>
+</section>
+<section class="section searchable-block" id="color">
+<div class="section-head">
+<div>
+<h2>04｜濾鏡與色調</h2>
+<p class="section-desc">同一個場景換個色調，就能從清新戀愛片切換成冷感雜誌封面。</p>
+</div>
+<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
+</div>
+<div class="groups">
+<div class="group">
+<h3>富士與膠片</h3>
+<div class="chips">
+<button class="chip" data-en="Fujifilm film colors" title="點一下加入組裝器，再點一次取消">Fujifilm 底片色彩</button><button class="chip" data-en="Fujifilm film tones" title="點一下加入組裝器，再點一次取消">富士膠片色調</button>
+<button class="chip" data-en="Classic Chrome film simulation" title="點一下加入組裝器，再點一次取消">Classic Chrome 經典正片色調</button><button class="chip" data-en="Classic Negative film simulation" title="點一下加入組裝器，再點一次取消">Classic Negative 經典負片色調</button>
+<button class="chip" data-en="Pro 400H fresh skin tones" title="點一下加入組裝器，再點一次取消">Pro 400H 清新膚色</button><button class="chip" data-en="straight-out-of-camera Fujifilm look" title="點一下加入組裝器，再點一次取消">富士相機直出感</button>
+</div>
+</div>
+<div class="group">
+<h3>柯達暖色</h3>
+<div class="chips">
+<button class="chip" data-en="Kodak Portra 400 color palette" title="點一下加入組裝器，再點一次取消">Kodak Portra 400 色調</button><button class="chip" data-en="warm and soft skin tones" title="點一下加入組裝器，再點一次取消">溫暖柔和膚色</button>
+<button class="chip" data-en="creamy yellow highlights" title="點一下加入組裝器，再點一次取消">奶油黃色高光</button><button class="chip" data-en="vintage warm-toned film" title="點一下加入組裝器，再點一次取消">復古暖色底片</button>
+<button class="chip" data-en="Kodak cinematic film texture" title="點一下加入組裝器，再點一次取消">柯達電影底片質感</button><button class="chip" data-en="natural rosy skin tones" title="點一下加入組裝器，再點一次取消">自然紅潤膚色</button>
+</div>
+</div>
+<div class="group">
+<h3>冷色與高級感</h3>
+<div class="chips">
+<button class="chip" data-en="cool blue-gray color palette" title="點一下加入組裝器，再點一次取消">清冷藍灰色調</button><button class="chip" data-en="low-saturation cool tones" title="點一下加入組裝器，再點一次取消">低飽和冷色調</button>
+<button class="chip" data-en="icy mist color palette" title="點一下加入組裝器，再點一次取消">冰霧感色彩</button><button class="chip" data-en="luxurious silver-gray aesthetic" title="點一下加入組裝器，再點一次取消">銀灰高級感</button>
+<button class="chip" data-en="cool porcelain skin tone" title="點一下加入組裝器，再點一次取消">冷白膚色</button><button class="chip" data-en="teal-blue cinematic color grading" title="點一下加入組裝器，再點一次取消">青藍電影調色</button>
+</div>
+</div>
+<div class="group">
+<h3>暖色與粉色</h3>
+<div class="chips">
+<button class="chip" data-en="creamy warm color palette" title="點一下加入組裝器，再點一次取消">奶油暖色調</button><button class="chip" data-en="honey-gold tones" title="點一下加入組裝器，再點一次取消">蜂蜜金色調</button>
+<button class="chip" data-en="apricot-toned soft light" title="點一下加入組裝器，再點一次取消">杏色柔光</button><button class="chip" data-en="champagne-gold tones" title="點一下加入組裝器，再點一次取消">香檳金色調</button>
+<button class="chip" data-en="cherry-blossom pink palette" title="點一下加入組裝器，再點一次取消">櫻花粉色調</button><button class="chip" data-en="dreamy pink-to-blue gradient" title="點一下加入組裝器，再點一次取消">粉藍夢幻漸層</button>
+<button class="chip" data-en="AX-11 fluorescent pink" title="點一下加入組裝器，再點一次取消">AX-11 螢光粉紅色</button><button class="chip" data-en="soft hazy pink-purple tones" title="點一下加入組裝器，再點一次取消">柔霧粉紫色調</button>
+</div>
+</div>
+</div>
+</section>
+<section class="section searchable-block" id="composition">
+<div class="section-head">
+<div>
+<h2>05｜構圖與鏡位</h2>
+<p class="section-desc">讓人物不要像站在證件照裡。前景、留白與鏡位會讓畫面開始說故事。</p>
+</div>
+<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
+</div>
+<div class="groups">
+<div class="group">
+<h3>常用構圖</h3>
+<div class="chips">
+<button class="chip" data-en="rule-of-thirds composition" title="點一下加入組裝器，再點一次取消">三分法則構圖</button><button class="chip" data-en="centered symmetrical composition" title="點一下加入組裝器，再點一次取消">中央對稱構圖</button>
+<button class="chip" data-en="golden-ratio composition" title="點一下加入組裝器，再點一次取消">黃金比例構圖</button><button class="chip" data-en="diagonal composition" title="點一下加入組裝器，再點一次取消">對角線構圖</button>
+<button class="chip" data-en="frame-within-a-frame composition" title="點一下加入組裝器，再點一次取消">框景構圖</button><button class="chip" data-en="leading-lines composition" title="點一下加入組裝器，再點一次取消">引導線構圖</button>
+<button class="chip" data-en="foreground-obstruction composition" title="點一下加入組裝器，再點一次取消">前景遮擋構圖</button><button class="chip" data-en="generous negative-space composition" title="點一下加入組裝器，再點一次取消">大量留白構圖</button>
+</div>
+</div>
+<div class="group">
+<h3>人物位置</h3>
+<div class="chips">
+<button class="chip" data-en="subject positioned in the lower half of the frame" title="點一下加入組裝器，再點一次取消">人物位於畫面下半部</button><button class="chip" data-en="subject positioned off-center" title="點一下加入組裝器，再點一次取消">人物偏離畫面中心</button>
+<button class="chip" data-en="negative space in the direction of the gaze" title="點一下加入組裝器，再點一次取消">視線方向保留空間</button><button class="chip" data-en="large amount of empty space above the subject" title="點一下加入組裝器，再點一次取消">上方保留大量空白</button>
+<button class="chip" data-en="smaller subject with a larger environmental presence" title="點一下加入組裝器，再點一次取消">人物略小、環境占比更高</button><button class="chip" data-en="visual emphasis centered on the subject" title="點一下加入組裝器，再點一次取消">視覺重點集中於人物</button>
+</div>
+</div>
+<div class="group">
+<h3>鏡位</h3>
+<div class="chips">
+<button class="chip" data-en="low-angle shot" title="點一下加入組裝器，再點一次取消">低機位仰拍</button><button class="chip" data-en="high-angle shot" title="點一下加入組裝器，再點一次取消">高機位俯拍</button>
+<button class="chip" data-en="eye-level camera angle" title="點一下加入組裝器，再點一次取消">平視角度拍攝</button><button class="chip" data-en="slightly angled side view" title="點一下加入組裝器，再點一次取消">微微側拍</button>
+<button class="chip" data-en="over-the-shoulder perspective" title="點一下加入組裝器，再點一次取消">越肩視角</button><button class="chip" data-en="boyfriend-perspective shot" title="點一下加入組裝器，再點一次取消">男友視角</button>
+<button class="chip" data-en="photographer's candid shot from a distance" title="點一下加入組裝器，再點一次取消">攝影師遠距離抓拍</button><button class="chip" data-en="natural paparazzi-style composition" title="點一下加入組裝器，再點一次取消">偷拍般的自然構圖</button>
+</div>
+</div>
+<div class="group">
+<h3>畫面節奏</h3>
+<div class="chips">
+<button class="chip" data-en="candid shot captured mid-action" title="點一下加入組裝器，再點一次取消">動作進行中的抓拍</button><button class="chip" data-en="subtle motion blur" title="點一下加入組裝器，再點一次取消">輕微動態模糊</button>
+<button class="chip" data-en="an accidental freeze-frame from a film" title="點一下加入組裝器，再點一次取消">像電影中的偶然定格</button><button class="chip" data-en="unposed and natural" title="點一下加入組裝器，再點一次取消">非刻意擺拍</button>
+<button class="chip" data-en="natural visual flow" title="點一下加入組裝器，再點一次取消">自然視線流動</button><button class="chip" data-en="clear foreground, midground, and background separation" title="點一下加入組裝器，再點一次取消">前中後景層次清楚</button>
+</div>
+</div>
+</div>
+</section>
+<section class="section searchable-block" id="texture">
+<div class="section-head">
+<div>
+<h2>06｜畫面質感與畫質</h2>
+<p class="section-desc">日常圖不宜太銳利或磨皮過重。真實紋理加一點膠片顆粒通常更耐看。</p>
+</div>
+<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
+</div>
+<div class="groups">
+<div class="group">
+<h3>真實攝影</h3>
+<div class="chips">
+<button class="chip" data-en="photorealistic photography" title="點一下加入組裝器，再點一次取消">真實攝影</button><button class="chip" data-en="realistic portrait photography" title="點一下加入組裝器，再點一次取消">寫實人像攝影</button>
+<button class="chip" data-en="natural skin texture" title="點一下加入組裝器，再點一次取消">自然皮膚紋理</button><button class="chip" data-en="fine visible pores" title="點一下加入組裝器，再點一次取消">細緻毛孔</button>
+<button class="chip" data-en="realistic individual hair strands" title="點一下加入組裝器，再點一次取消">真實髮絲</button><button class="chip" data-en="natural fabric folds" title="點一下加入組裝器，再點一次取消">自然布料皺褶</button>
+<button class="chip" data-en="accurate human proportions" title="點一下加入組裝器，再點一次取消">精準人體比例</button><button class="chip" data-en="natural hand poses" title="點一下加入組裝器，再點一次取消">自然手部姿勢</button>
+</div>
+</div>
+<div class="group">
+<h3>柔美與空氣感</h3>
+<div class="chips">
+<button class="chip" data-en="soft-focus filter" title="點一下加入組裝器，再點一次取消">柔焦濾鏡</button><button class="chip" data-en="soft dreamy haze" title="點一下加入組裝器，再點一次取消">朦朧夢幻感</button>
+<button class="chip" data-en="airy atmosphere" title="點一下加入組裝器，再點一次取消">空氣感</button><button class="chip" data-en="delicate mist" title="點一下加入組裝器，再點一次取消">輕柔薄霧</button>
+<button class="chip" data-en="soft highlights" title="點一下加入組裝器，再點一次取消">柔和高光</button><button class="chip" data-en="slightly overexposed" title="點一下加入組裝器，再點一次取消">微微過曝</button>
+<button class="chip" data-en="low-contrast image" title="點一下加入組裝器，再點一次取消">低對比畫面</button><button class="chip" data-en="romantic glow" title="點一下加入組裝器，再點一次取消">浪漫光暈</button>
+</div>
+</div>
+<div class="group">
+<h3>底片與數位懷舊</h3>
+<div class="chips">
+<button class="chip" data-en="35mm film photography" title="點一下加入組裝器，再點一次取消">35mm 膠片攝影</button><button class="chip" data-en="fine film grain" title="點一下加入組裝器，再點一次取消">細膩底片顆粒</button>
+<button class="chip" data-en="subtle light leak" title="點一下加入組裝器，再點一次取消">微弱漏光</button><button class="chip" data-en="subtle color shift" title="點一下加入組裝器，再點一次取消">輕微色偏</button>
+<button class="chip" data-en="disposable-camera aesthetic" title="點一下加入組裝器，再點一次取消">即可拍相機質感</button><button class="chip" data-en="CCD digital-camera aesthetic" title="點一下加入組裝器，再點一次取消">CCD 數位相機感</button>
+<button class="chip" data-en="early-2000s digital photography" title="點一下加入組裝器，再點一次取消">千禧年代數位攝影</button><button class="chip" data-en="faded vintage-photo colors" title="點一下加入組裝器，再點一次取消">老照片色彩褪色感</button>
+</div>
+</div>
+<div class="group">
+<h3>高品質詞</h3>
+<div class="chips">
+<button class="chip" data-en="masterpiece" title="點一下加入組裝器，再點一次取消">傑作</button><button class="chip" data-en="best quality" title="點一下加入組裝器，再點一次取消">最佳品質</button>
+<button class="chip" data-en="ultra-fine details" title="點一下加入組裝器，再點一次取消">超精緻細節</button><button class="chip" data-en="high resolution" title="點一下加入組裝器，再點一次取消">高解析度</button>
+<button class="chip" data-en="8K" title="點一下加入組裝器，再點一次取消">8K</button><button class="chip" data-en="HDR" title="點一下加入組裝器，再點一次取消">HDR</button>
+<button class="chip" data-en="cinematic-quality image" title="點一下加入組裝器，再點一次取消">電影級畫面</button><button class="chip" data-en="professional color grading" title="點一下加入組裝器，再點一次取消">專業色彩分級</button>
+</div>
+</div>
+</div>
+<div class="tip"><b>畫質小提醒：</b>8K、HDR、傑作可以放在提示詞最後。前面先把鏡頭、光線、構圖、色調與人物狀態寫清楚，畫面通常會更自然、更漂亮。</div>
+</section>
+<section class="section searchable-block" id="background">
+<div class="section-head">
+<div>
+<h2>07｜背景、散景與乾淨畫面</h2>
+<p class="section-desc">控制背景不要搶戲，也能避免模型塞進路人、文字或奇怪的家具。</p>
+</div>
+<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
+</div>
+<div class="groups">
+<div class="group">
+<h3>散景與前景</h3>
+<div class="chips">
+<button class="chip" data-en="creamy bokeh" title="點一下加入組裝器，再點一次取消">奶油散景</button><button class="chip" data-en="circular bokeh lights" title="點一下加入組裝器，再點一次取消">圓形光斑</button>
+<button class="chip" data-en="city-light bokeh" title="點一下加入組裝器，再點一次取消">城市燈光散景</button><button class="chip" data-en="blurred flowers in the foreground" title="點一下加入組裝器，再點一次取消">花朵前景虛化</button>
+<button class="chip" data-en="raindrops on glass in the foreground" title="點一下加入組裝器，再點一次取消">雨滴玻璃前景</button><button class="chip" data-en="soft-focus curtain foreground" title="點一下加入組裝器，再點一次取消">柔焦窗簾前景</button>
+<button class="chip" data-en="foreground foliage partially framing the subject" title="點一下加入組裝器，再點一次取消">前景枝葉遮擋</button><button class="chip" data-en="dappled patches of sunlight" title="點一下加入組裝器，再點一次取消">細碎陽光斑駁</button>
+</div>
+</div>
+<div class="group">
+<h3>乾淨畫面</h3>
+<div class="chips">
+<button class="chip" data-en="clean and minimal image" title="點一下加入組裝器，再點一次取消">畫面乾淨簡潔</button><button class="chip" data-en="restrained background styling" title="點一下加入組裝器，再點一次取消">背景陳設適量</button>
+<button class="chip" data-en="tidy environment" title="點一下加入組裝器，再點一次取消">空間整潔</button><button class="chip" data-en="soft-focus background that does not distract" title="點一下加入組裝器，再點一次取消">背景柔焦且不搶戲</button>
+<button class="chip" data-en="no other people" title="點一下加入組裝器，再點一次取消">不出現其他人物</button><button class="chip" data-en="no passersby" title="點一下加入組裝器，再點一次取消">不出現路人</button>
+<button class="chip" data-en="no text or signage" title="點一下加入組裝器，再點一次取消">不出現文字招牌</button><button class="chip" data-en="no unnecessary objects" title="點一下加入組裝器，再點一次取消">不出現多餘物件</button>
+</div>
+</div>
+</div>
+</section>
+<section class="section searchable-block" id="negative">
+<div class="section-head">
+<div>
+<h2>08｜避雷與負面提示詞</h2>
+<p class="section-desc">適合放在提示詞最後，尤其是人物、手部與「不要拼圖」這類限制。</p>
+</div>
+<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
+</div>
+<div class="groups">
+<div class="group">
+<h3>人體與五官</h3>
+<div class="chips">
+<button class="chip" data-en="avoid incorrect finger counts" title="點一下加入組裝器，再點一次取消">避免手指數量錯誤</button><button class="chip" data-en="avoid extra hands, feet, or limbs" title="點一下加入組裝器，再點一次取消">避免多手、多腳、多肢體</button>
+<button class="chip" data-en="avoid deformed hands" title="點一下加入組裝器，再點一次取消">避免手部變形</button><button class="chip" data-en="avoid distorted joints" title="點一下加入組裝器，再點一次取消">避免關節扭曲</button>
+<button class="chip" data-en="avoid distorted faces" title="點一下加入組裝器，再點一次取消">避免臉部崩壞</button><button class="chip" data-en="avoid misaligned facial features" title="點一下加入組裝器，再點一次取消">避免五官歪斜</button>
+<button class="chip" data-en="avoid merged bodies" title="點一下加入組裝器，再點一次取消">避免人物融合</button><button class="chip" data-en="avoid incorrect body proportions" title="點一下加入組裝器，再點一次取消">避免身體比例失衡</button>
+</div>
+</div>
+<div class="group">
+<h3>質感與版面</h3>
+<div class="chips">
+<button class="chip" data-en="avoid plastic-looking skin" title="點一下加入組裝器，再點一次取消">避免塑膠皮膚</button><button class="chip" data-en="avoid excessive skin smoothing" title="點一下加入組裝器，再點一次取消">避免過度磨皮</button>
+<button class="chip" data-en="avoid oversized eyes" title="點一下加入組裝器，再點一次取消">避免眼睛過度放大</button><button class="chip" data-en="avoid stiff expressions" title="點一下加入組裝器，再點一次取消">避免僵硬表情</button>
+<button class="chip" data-en="avoid wax-figure appearance" title="點一下加入組裝器，再點一次取消">避免蠟像感</button><button class="chip" data-en="avoid oversharpening" title="點一下加入組裝器，再點一次取消">避免過度銳化</button>
+<button class="chip" data-en="avoid collages, grids, and comic panels" title="點一下加入組裝器，再點一次取消">避免拼圖、九宮格、漫畫分鏡</button><button class="chip" data-en="each image must be a separate complete photograph" title="點一下加入組裝器，再點一次取消">每張圖片為獨立完整照片</button>
+</div>
+</div>
+</div>
+</section>
+<section class="section searchable-block" id="universal-combos">
+<div class="section-head">
+<div>
+<h2>09｜漂亮萬用組合</h2>
+<p class="section-desc">這些組合不綁定場景或主題，可以直接接在任何人物、服裝、地點或互動描述後面。</p>
+</div>
+</div>
+<div class="combo-grid">
+<article class="combo">
+<h3>✨ 韓系唯美萬用</h3>
+<small>柔和、乾淨、最不容易出錯</small>
+<div class="combo-text" data-combo-id="✨ 韓系唯美萬用" data-en="Korean-style dreamy portrait photography, 85mm portrait lens, f/1.4 wide aperture, soft natural light, warm backlighting, translucent backlit hair strands, rule-of-thirds composition, creamy bokeh, Fujifilm film colors, fine film grain, natural skin texture, candid photography, clean composition, luxurious yet understated.">韓式唯美寫真，85mm 人像鏡頭，f/1.4 大光圈，柔和自然光，暖色逆光，髮絲透光，三分法則構圖，奶油散景，Fujifilm 底片色彩，細膩膠片顆粒，自然皮膚紋理，攝影師抓拍感，畫面乾淨，高級而不張揚。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🫧 韓系清透萬用</h3>
+<small>乾淨、明亮、帶透明空氣感</small>
+<div class="combo-text" data-combo-id="🫧 韓系清透萬用" data-en="Fresh and luminous Korean-style portrait photography, 50mm standard portrait lens, f/1.8 shallow depth of field, bright soft natural light, clean low-saturation colors, crisp white highlights, gentle shadows, clear catchlights, natural skin tones, minimal soft-focus background, unposed and photorealistic.">韓系清透寫真，50mm 標準人像鏡頭，f/1.8 淺景深，明亮柔和自然光，乾淨低飽和色彩，白色高光，柔和陰影，清晰眼神光，自然膚色，背景簡潔柔焦，非刻意擺拍，真實攝影質感。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🎞️ 日系膠片萬用</h3>
+<small>自然、文藝、像底片相機留下的一瞬間</small>
+<div class="combo-text" data-combo-id="🎞️ 日系膠片萬用" data-en="Japanese-style lifestyle photography, 35mm film photography, natural daylight, slight overexposure, soft low-saturation colors, fine film grain, subtle light leaks, gentle focus, negative-space composition, natural movement, not looking at the camera, an everyday moment captured by chance.">日系生活寫真，35mm 膠片攝影，自然日光，微微過曝，淡雅低飽和色彩，細膩底片顆粒，輕微漏光，柔和對焦，留白構圖，人物動作自然，不看鏡頭，像偶然被記錄下來的日常片段。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🌤️ 溫柔自然光萬用</h3>
+<small>適合任何溫柔、生活感與浪漫畫面</small>
+<div class="combo-text" data-combo-id="🌤️ 溫柔自然光萬用" data-en="Soft natural light filtered through curtains, delicate patches of light falling across the subject and background, 50mm standard lens, f/1.8 shallow depth of field, natural eye-level perspective, soft highlights, low-contrast shadows, natural skin texture, detailed hair strands, warm and quiet atmosphere.">柔和自然光，窗簾過濾後的日光，細碎光影落在人物與背景上，50mm 標準鏡頭，f/1.8 淺景深，自然人眼視角，柔和高光與低對比陰影，真實皮膚紋理，細緻髮絲，畫面溫暖安靜。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🌅 夕陽逆光萬用</h3>
+<small>浪漫感最快速的加成組合</small>
+<div class="combo-text" data-combo-id="🌅 夕陽逆光萬用" data-en="Warm sunset backlighting, golden hair light, soft rim lighting, glowing subject edges, 85mm portrait lens, f/1.4 wide aperture, beautiful circular bokeh, lightly blurred foreground, Fujifilm film colors, romantic cinematic freeze-frame, photorealistic photography, ultra-fine details.">暖色夕陽逆光，金色髮絲光，柔和輪廓光，人物邊緣發亮，85mm 人像鏡頭，f/1.4 大光圈，漂亮圓形光斑，前景輕微虛化，Fujifilm 底片色彩，浪漫電影定格感，真實攝影，超精緻細節。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🌙 夜景電影感萬用</h3>
+<small>適合夜晚、城市、室內微光</small>
+<div class="combo-text" data-combo-id="🌙 夜景電影感萬用" data-en="Cinematic night photography, city-light bokeh, warm streetlights mixed with cool ambient light, 50mm portrait lens, f/1.4 wide aperture, low-light photography, soft highlights, detailed deep shadows, reflections on wet pavement, subject naturally integrated into the setting, quiet visual storytelling.">電影感夜景攝影，城市燈光散景，暖色路燈與冷色環境光交錯，50mm 人像鏡頭，f/1.4 大光圈，低照度攝影，柔和高光，深色陰影保留細節，雨後地面反光，人物自然融入環境，畫面安靜而有故事感。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>💎 高級雜誌萬用</h3>
+<small>俐落、精品、適合時尚人物</small>
+<div class="combo-text" data-combo-id="💎 高級雜誌萬用" data-en="High-fashion editorial photography, 105mm medium-telephoto lens, refined studio lighting, soft side light and rim light, minimalist background, cool low-saturation color grading, model-like posing, sharp gaze, natural skin texture, commercial photography quality, professional color grading, clean luxury aesthetic.">高級時尚雜誌攝影，105mm 中長焦鏡頭，精緻棚拍光影，側面柔光與輪廓光，極簡背景，清冷低飽和調色，模特兒姿態，銳利眼神，自然皮膚紋理，商業攝影品質，專業色彩分級，畫面乾淨且有高級感。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🪞柔霧高級感萬用</h3>
+<small>比雜誌感更柔，比日常感更精緻</small>
+<div class="combo-text" data-combo-id="🪞柔霧高級感萬用" data-en="Soft-haze luxury portrait, 85mm medium-telephoto lens, softbox lighting, low-contrast lighting, gentle highlights, creamy white and pale gray palette, refined facial details, natural skin texture, clean background, delicate depth of field, subtle soft focus, quiet, restrained, and elegant.">柔霧高級人像，85mm 中長焦鏡頭，柔光箱照明，低對比光影，柔和高光，奶油白與淡灰色調，精緻五官，真實皮膚紋理，背景乾淨，細膩景深，輕微柔焦，整體安靜、克制、優雅。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>📷 自然抓拍萬用</h3>
+<small>想讓人物不要看起來像硬擺拍，就用這組</small>
+<div class="combo-text" data-combo-id="📷 自然抓拍萬用" data-en="Natural candid photography captured mid-action, not looking at the camera, relaxed expressions, effortless body language, subtle movement in clothing and hair, 50mm standard lens, natural eye-level perspective, authentic lifestyle documentary aesthetic, gentle shallow depth of field, clean non-distracting background.">攝影師自然抓拍，動作進行中的瞬間，不看鏡頭，表情放鬆，身體姿勢自然，衣服與頭髮帶有輕微動態，50mm 標準鏡頭，自然人眼視角，真實生活紀實感，柔和淺景深，背景乾淨且不搶戲。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🕊️ 大量留白萬用</h3>
+<small>適合桌布、封面、海報感構圖</small>
+<div class="combo-text" data-combo-id="🕊️ 大量留白萬用" data-en="Generous negative-space composition, subject placed in the lower half of the frame or off-center, breathing room in the direction of the gaze, clean minimal background, soft natural light, low-saturation colors, 50mm standard lens, natural body proportions, calm and airy visual balance.">大量留白構圖，人物位於畫面下半部或偏離中心，視線方向保留空間，背景乾淨簡潔，柔和自然光，低飽和色調，50mm 標準鏡頭，人物比例自然，整體安靜、清爽、有呼吸感。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🌸 粉色夢幻萬用</h3>
+<small>甜美但不會太俗氣</small>
+<div class="combo-text" data-combo-id="🌸 粉色夢幻萬用" data-en="Creamy pink and pale blue palette, soft hazy lighting, dreamy circular bokeh, gentle highlights, 85mm portrait lens, f/1.4 wide aperture, lightly blurred foreground, fine film grain, natural skin texture, sweet, luminous, and clean without excessive saturation.">奶油粉與淡藍色調，柔霧光線，夢幻圓形光斑，柔和高光，85mm 人像鏡頭，f/1.4 大光圈，前景輕微虛化，細膩膠片顆粒，自然皮膚紋理，畫面甜美、透明、乾淨，不過度飽和。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🧊 清冷電影萬用</h3>
+<small>適合成熟、疏離、都市感畫面</small>
+<div class="combo-text" data-combo-id="🧊 清冷電影萬用" data-en="Cool cinematic photography, low-saturation blue-gray palette, soft side lighting, detailed deep shadows, 85mm portrait lens, cinematic depth of field, minimal background, restrained expression, natural skin texture, professional color grading, refined and emotionally distant atmosphere.">清冷電影感攝影，藍灰低飽和色調，柔和側光，深色陰影保留細節，85mm 人像鏡頭，電影級景深，背景簡潔，人物神情克制，真實皮膚紋理，專業色彩分級，整體冷靜、精緻、有距離感。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🍯 奶油暖色萬用</h3>
+<small>溫柔、柔軟、帶居家與戀愛氣氛</small>
+<div class="combo-text" data-combo-id="🍯 奶油暖色萬用" data-en="Creamy warm color palette, honey-gold highlights, soft natural light, warm brown wooden background, 50mm standard lens, f/1.8 shallow depth of field, natural skin tones, gentle shadows, fine film grain, warm, comfortable, and quiet atmosphere wrapped in sunlight.">奶油暖色調，蜂蜜金色高光，柔和自然光，暖棕木質背景，50mm 標準鏡頭，f/1.8 淺景深，真實膚色，柔和陰影，細膩膠片顆粒，畫面溫暖、舒服、安靜，像被陽光包住的日常。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>⚡ 清晰商業攝影萬用</h3>
+<small>適合商品感、品牌感、人物形象照</small>
+<div class="combo-text" data-combo-id="⚡ 清晰商業攝影萬用" data-en="Commercial portrait photography, precise focus, clear catchlights, natural skin texture, detailed hair and fabric, softbox lighting, clean background, high dynamic range, professional color grading, crisp detail without excessive smoothing, polished and professional.">商業人像攝影，精準對焦，清晰眼神光，真實皮膚紋理，細緻髮絲與服裝材質，柔光箱照明，乾淨背景，高動態範圍，專業色彩分級，清晰銳利但不過度磨皮，整體精緻、穩定、專業。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+</div>
+<div class="tip"><b>搭配方法：</b>先寫人物、服裝、場景與動作，再從這一區挑一組接在後面。通常一組就夠，最多再補一組光線或色調，避免提示詞彼此打架。</div>
+</section>
+<section class="section searchable-block" id="combos">
+<div class="section-head">
+<div>
+<h2>10｜情境推薦組合</h2>
+<p class="section-desc">下面都是可直接貼進 GPT 生圖的完整組合。</p>
+</div>
+</div>
+<div class="combo-grid">
+<article class="combo">
+<h3>🛋️ 韓系居家日常</h3>
+<small>最適合沙發、吃飯、看電影、一起做家事</small>
+<div class="combo-text" data-combo-id="🛋️ 韓系居家日常" data-en="Korean-style natural lifestyle photography, 50mm standard portrait lens, f/1.8 shallow depth of field, natural eye-level perspective, soft window light, creamy warm color palette, authentic documentary photography, natural candid interaction, not looking at the camera, relaxed expressions, subtle lived-in texture in hair and clothing, natural skin texture, fine film grain, clean soft-focus background, a quiet and sweet K-drama everyday moment.">韓系自然生活感寫真，50mm 標準人像鏡頭，f/1.8 淺景深，自然人眼視角，窗邊柔和自然光，奶油暖色調，真實生活紀實攝影，攝影師自然抓拍，兩人正在互動，不看鏡頭，表情放鬆自然，頭髮與衣服帶有輕微生活感，真實皮膚紋理，細膩膠片顆粒，背景乾淨柔焦，像韓劇中安靜甜蜜的日常片段。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🌸 韓系清新寫真</h3>
+<small>適合約會、校園、樹下、咖啡廳</small>
+<div class="combo-text" data-combo-id="🌸 韓系清新寫真" data-en="Fresh Korean-style portrait photography, cinematic film still, 85mm portrait lens, f/1.4 wide aperture, rule-of-thirds composition, soft natural light, warm sunset backlighting, translucent backlit hair strands, Fujifilm film colors, creamy bokeh, fine film grain, natural skin texture, candid photography, photorealistic, ultra-high resolution.">韓系清新寫真，電影劇照，85mm 人像鏡頭，f/1.4 大光圈，三分法則構圖，柔和自然光，暖色夕陽逆光，髮絲透光，Fujifilm 底片色彩，奶油散景，細膩膠片顆粒，自然皮膚紋理，攝影師抓拍感，真實攝影，超高解析度。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🎞️ 日系青春抓拍</h3>
+<small>適合旅行、街頭、校園、夏日戶外</small>
+<div class="combo-text" data-combo-id="🎞️ 日系青春抓拍" data-en="Luminous Japanese youthful portrait photography, 35mm film photography, natural daylight, slight overexposure, soft low-saturation colors, fine film grain, wind moving through the hair, natural smile, candid lifestyle photography, negative-space composition, summer atmosphere, pure-romance cinematic freeze-frame, full presentation of subject and environment, not looking at the camera, unposed.">日系透明感青春寫真，35mm 膠片攝影，自然日光，微微過曝，淡雅低飽和色彩，細膩底片顆粒，微風吹動頭髮，自然笑容，生活抓拍，留白構圖，夏日空氣感，純愛電影定格，人物與環境完整呈現，不看鏡頭，非刻意擺拍。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>💍 浪漫婚紗名場面</h3>
+<small>適合接吻、擁抱、逆光、戶外婚紗</small>
+<div class="combo-text" data-combo-id="💍 浪漫婚紗名場面" data-en="Korean-style lifestyle wedding photography, 85mm wide-aperture portrait lens, warm sunset backlighting, beautiful circular bokeh, soft rim lighting, blurred flowers in the foreground, candid shot from a distance, natural intimate interaction, Fujifilm Pro 400H tones, cinematic depth of field, detailed wedding fabric, romantic and unposed, clean background, no other people.">韓系生活感婚紗寫真，85mm 大光圈人像鏡頭，暖色夕陽逆光，漂亮圓形光斑，柔和輪廓光，前景花朵虛化，攝影師遠距離抓拍，自然親密互動，Fujifilm Pro 400H 色調，電影級景深，細緻婚紗布料，浪漫而不刻意擺拍，背景乾淨，不出現其他人物。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🖤 高級雜誌大片</h3>
+<small>適合棚拍、情侶封面、珠寶與時裝</small>
+<div class="combo-text" data-combo-id="🖤 高級雜誌大片" data-en="High-fashion editorial campaign, luxury advertising aesthetic, 105mm medium-telephoto lens, refined studio lighting, strong rim light, cool low-saturation color grading, minimalist background, model-like posing, sharp gaze, natural skin texture, commercial photography quality, ultra-fine details, professional color grading, clean and understated luxury.">高級時尚雜誌大片，精品廣告質感，105mm 中長焦鏡頭，精緻棚拍光影，強烈輪廓光，清冷低飽和調色，極簡背景，模特兒姿態，銳利眼神，自然皮膚紋理，商業攝影品質，超精緻細節，專業色彩分級，畫面乾淨且不張揚。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>🌧️ 雨天居家電影感</h3>
+<small>適合颱風天、看電影、安靜窩在家</small>
+<div class="combo-text" data-combo-id="🌧️ 雨天居家電影感" data-en="Korean-style home lifestyle photography, 50mm standard lens, f/1.8 shallow depth of field, heavy rain and rain streaks outside the window, diffused overcast light, warm indoor lighting mixed with cool television light, two people sitting cross-legged on a sofa and interacting naturally, relaxed expressions, not looking at the camera, candid photography, subtle film grain, natural skin texture, calm tidy background, a rainy-day K-drama everyday moment.">韓系居家生活寫真，50mm 標準鏡頭，f/1.8 淺景深，窗外暴雨與玻璃雨痕，陰天漫射光，室內暖黃色燈光與電視螢幕冷光交錯，兩人盤腿坐在沙發上自然互動，表情放鬆，不看鏡頭，攝影師抓拍，輕微膠片顆粒，真實皮膚紋理，背景安靜整潔，像韓劇中的雨天日常片段。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+<article class="combo">
+<h3>☕ 咖啡廳約會</h3>
+<small>有空間感，也保留親密小動作</small>
+<div class="combo-text" data-combo-id="☕ 咖啡廳約會" data-en="An adult couple on a quiet café date, 35mm environmental portrait lens, full presentation of the subjects and warm wooden interior, slanting afternoon sunlight through the window, coffee cups and greenery framing the foreground, talking and laughing naturally, the woman gently tugging at the man's sleeve while he leans down to listen, candid photography, not looking at the camera, Japanese-style lifestyle documentary photography, soft low-saturation tones, fine film grain, authentic and gentle.">一對成年情侶在安靜咖啡廳約會，35mm 環境人像鏡頭，人物與木質空間完整呈現，午後斜射陽光穿過窗戶，前景利用咖啡杯與綠植自然框景，兩人邊聊天邊笑，女生拉著男生袖口，男生低頭聽她說話，自然抓拍，不看鏡頭，日系生活紀實寫真，淡雅低飽和色調，細膩底片顆粒，真實而溫柔。</div>
+<div class="combo-actions"><button class="add-builder-btn" onclick="copyCombo(this)" title="加入後可切換中文或英文">加入組裝器</button><button aria-label="直接複製完整組合" class="direct-copy-btn" data-default-label="📋 直接複製" onclick="directCopyCombo(this)" title="依目前語言直接複製完整組合" type="button">📋 直接複製</button></div></article>
+</div>
+</section>
+<div class="no-result" id="noResult">找不到這個詞，換一個關鍵字試試看 ✦</div>
+</main>
+<footer>點選詞彙會加入提示詞組裝器，再點一次即可取消。<br/>完成後可切換中文或英文版本，並一鍵複製整段。</footer>
+<div class="toast" id="toast">已複製</div>
+<script>
+const toast = document.getElementById('toast');
+const searchInput = document.getElementById('searchInput');
+const noResult = document.getElementById('noResult');
+const promptOutput = document.getElementById('promptOutput');
+
+let currentLanguage = 'zh';
+try{
+  currentLanguage = localStorage.getItem('promptBuilderLanguage') || 'zh';
+}catch(e){
+  currentLanguage = 'zh';
+}
+let selectedItems = [];
+
+function showToast(message='已複製'){
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>toast.classList.remove('show'),1500);
+}
+
+function fallbackCopyText(text){
+  const area = document.createElement('textarea');
+  area.value = text;
+  area.setAttribute('readonly', '');
+  area.setAttribute('aria-hidden', 'true');
+  area.style.position = 'fixed';
+  area.style.left = '0';
+  area.style.top = '0';
+  area.style.width = '1px';
+  area.style.height = '1px';
+  area.style.padding = '0';
+  area.style.border = '0';
+  area.style.outline = '0';
+  area.style.boxShadow = 'none';
+  area.style.background = 'transparent';
+  area.style.opacity = '0.01';
+  area.style.fontSize = '16px';
+  document.body.appendChild(area);
+
+  area.focus({preventScroll:true});
+  area.select();
+  area.setSelectionRange(0, area.value.length);
+
+  let copied = false;
+  try{
+    copied = document.execCommand('copy');
+  }catch(e){
+    copied = false;
+  }
+
+  area.remove();
+  return copied;
+}
+
+async function copyText(text){
+  const cleanText = (text || '').trim();
+
+  if(!cleanText){
+    showToast('框框裡還沒有內容');
+    return false;
+  }
+
+  let copied = false;
+
+  if(navigator.clipboard && window.isSecureContext){
+    try{
+      await navigator.clipboard.writeText(cleanText);
+      copied = true;
+    }catch(e){
+      copied = false;
+    }
+  }
+
+  if(!copied){
+    copied = fallbackCopyText(cleanText);
+  }
+
+  if(copied){
+    showToast('已複製到剪貼簿');
+    return true;
+  }
+
+  /* 極少數手機瀏覽器不允許本機 HTML 存取剪貼簿時，直接選取組裝框內容 */
+  promptOutput.value = cleanText;
+  promptOutput.focus({preventScroll:false});
+  promptOutput.select();
+  promptOutput.setSelectionRange(0, promptOutput.value.length);
+  showToast('已選取文字，請長按複製');
+  return false;
+}
+
+function normalizePart(text){
+  return text.trim().replace(/[，,。.;；\s]+$/g,'');
+}
+
+function itemText(item){
+  return currentLanguage === 'en' ? item.en : item.zh;
+}
+
+function renderPrompt(){
+  const separator = currentLanguage === 'en' ? ', ' : '，';
+  const ending = currentLanguage === 'en' ? '.' : '。';
+  const text = selectedItems
+    .map(item=>normalizePart(itemText(item)))
+    .filter(Boolean)
+    .join(separator);
+  promptOutput.value = text ? text + ending : '';
+  document.getElementById('selectedCount').textContent = selectedItems.length;
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang === currentLanguage);
+  });
+  refreshSelectedState();
+  saveBuilder();
+}
+
+function saveBuilder(){
+  try{
+    localStorage.setItem('promptBuilderLanguage', currentLanguage);
+    localStorage.setItem('promptBuilderItems', JSON.stringify(selectedItems));
+  }catch(e){
+    /* 某些手機私密瀏覽模式可能不允許 localStorage，功能仍可正常使用 */
+  }
+}
+
+function loadBuilder(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('promptBuilderItems') || '[]');
+    if(Array.isArray(saved)) selectedItems = saved;
+  }catch(e){
+    selectedItems = [];
+  }
+  setLanguage(currentLanguage, false);
+  renderPrompt();
+}
+
+function hasItem(id){
+  return selectedItems.some(item=>item.id===id);
+}
+
+function addItem(item){
+  if(!hasItem(item.id)){
+    selectedItems.push(item);
+  }
+}
+
+function removeItem(id){
+  selectedItems = selectedItems.filter(item=>item.id!==id);
+}
+
+function toggleChip(chip){
+  const zh = chip.textContent.trim();
+  const id = 'chip:' + zh;
+  if(hasItem(id)){
+    removeItem(id);
+  }else{
+    addItem({id, type:'chip', zh, en:chip.dataset.en || zh});
+  }
+  renderPrompt();
+}
+
+document.querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>toggleChip(chip));
+});
+
+function copySection(btn){
+  const section = btn.closest('.section');
+  const chips = [...section.querySelectorAll('.chip:not(.hidden-by-search)')];
+  if(!chips.length) return;
+  const allSelected = chips.every(chip=>hasItem('chip:' + chip.textContent.trim()));
+
+  chips.forEach(chip=>{
+    const zh = chip.textContent.trim();
+    const id = 'chip:' + zh;
+    if(allSelected){
+      removeItem(id);
+    }else{
+      addItem({id, type:'chip', zh, en:chip.dataset.en || zh});
+    }
+  });
+  renderPrompt();
+  showToast(allSelected ? '已取消本區詞彙' : '已加入本區詞彙');
+}
+
+
+function directCopyCombo(btn){
+  const combo = btn.closest('.combo');
+  const textEl = combo.querySelector('.combo-text');
+  const text = currentLanguage === 'en'
+    ? (textEl.dataset.en || textEl.textContent.trim())
+    : textEl.textContent.trim();
+
+  copyText(text);
+
+  const original = btn.dataset.defaultLabel || '📋 直接複製';
+  btn.textContent = '✓ 已複製';
+  btn.classList.add('copied');
+  setTimeout(()=>{
+    btn.textContent = original;
+    btn.classList.remove('copied');
+  }, 1100);
+}
+
+function copyCombo(btn){
+  const combo = btn.closest('.combo');
+  const textEl = combo.querySelector('.combo-text');
+  const heading = combo.querySelector('h3').textContent.trim();
+  const id = 'combo:' + heading;
+  if(hasItem(id)){
+    removeItem(id);
+    showToast('已從組裝器移除');
+  }else{
+    addItem({
+      id,
+      type:'combo',
+      zh:textEl.textContent.trim(),
+      en:textEl.dataset.en || textEl.textContent.trim()
+    });
+    showToast('已加入組裝器');
+  }
+  renderPrompt();
+}
+
+function setLanguage(lang, rerender=true){
+  currentLanguage = lang === 'en' ? 'en' : 'zh';
+  if(rerender) renderPrompt();
+}
+
+function copyPromptOutput(){
+  copyText(promptOutput.value);
+}
+
+function undoLast(){
+  if(!selectedItems.length){
+    showToast('目前沒有可移除的項目');
+    return;
+  }
+  selectedItems.pop();
+  renderPrompt();
+}
+
+function clearBuilder(){
+  selectedItems = [];
+  renderPrompt();
+  showToast('已清空組裝器');
+}
+
+function refreshSelectedState(){
+  document.querySelectorAll('.chip').forEach(chip=>{
+    chip.classList.toggle('selected', hasItem('chip:' + chip.textContent.trim()));
+  });
+  document.querySelectorAll('.combo').forEach(combo=>{
+    const heading = combo.querySelector('h3').textContent.trim();
+    const btn = combo.querySelector('button');
+    const selected = hasItem('combo:' + heading);
+    btn.classList.toggle('selected', selected);
+    btn.textContent = selected ? '已加入，點擊取消' : '加入組裝器';
+  });
+}
+
+function scrollToCombos(){
+  document.getElementById('universal-combos').scrollIntoView({behavior:'smooth'});
+}
+
+if (searchInput) {
+  searchInput.addEventListener('input', ()=>{
+    const q = searchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    document.querySelectorAll('.searchable-block').forEach(block=>{
+      const chips = block.querySelectorAll('.chip');
+      const combos = block.querySelectorAll('.combo');
+      const groups = block.querySelectorAll('.group');
+      let blockMatch = false;
+
+      if(chips.length){
+        chips.forEach(chip=>{
+          const haystack = (chip.textContent + ' ' + (chip.dataset.en || '')).toLowerCase();
+          const hit = !q || haystack.includes(q);
+          chip.classList.toggle('hidden-by-search', !hit);
+          if(hit){ blockMatch = true; visibleCount++; }
+        });
+        groups.forEach(group=>{
+          const anyVisible = [...group.querySelectorAll('.chip')].some(c=>!c.classList.contains('hidden-by-search'));
+          group.classList.toggle('hidden-by-search', q && !anyVisible);
+        });
+        block.classList.toggle('hidden-by-search', q && !blockMatch);
+      }else if(combos.length){
+        combos.forEach(combo=>{
+          const textEl = combo.querySelector('.combo-text');
+          const haystack = (combo.textContent + ' ' + (textEl.dataset.en || '')).toLowerCase();
+          const hit = !q || haystack.includes(q);
+          combo.classList.toggle('hidden-by-search', !hit);
+          if(hit){ blockMatch = true; visibleCount++; }
+        });
+        block.classList.toggle('hidden-by-search', q && !blockMatch);
+      }else{
+        const hit = !q || block.textContent.toLowerCase().includes(q);
+        block.classList.toggle('hidden-by-search', !hit);
+        if(hit) visibleCount++;
+      }
+    });
+
+    if (noResult) {
+      noResult.style.display = (q && visibleCount === 0) ? 'block' : 'none';
+    }
+  });
+}
+
+loadBuilder();
+</script>
+<button class="builder-fab" onclick="document.getElementById('prompt-builder').scrollIntoView({behavior:'smooth'})" type="button">🧩 組裝器</button></body>
+</html>
