@@ -1812,6 +1812,65 @@
         scroll-behavior:auto !important;
       }
     }
+
+    .group-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .group-head h3{
+      margin:0 !important;
+    }
+
+    .group-select-all{
+      flex:0 0 auto;
+      min-height:38px;
+      padding:8px 13px;
+      border-radius:999px;
+      border:1px solid #ead8e4;
+      color:#7b6172;
+      background:linear-gradient(135deg,#fff5fa,#eef8ff);
+      font-family:var(--libby-round-font) !important;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 6px 16px rgba(105,82,111,.06);
+      transition:transform .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    .group-select-all:hover{
+      transform:translateY(-1px);
+      color:#ffffff;
+      border-color:transparent;
+      background:linear-gradient(135deg,#ff86b8,#aa96ef,#72bdf5);
+      box-shadow:0 9px 20px rgba(129,111,203,.17);
+    }
+
+    .group-select-all.active{
+      color:#ffffff;
+      border-color:transparent;
+      background:linear-gradient(135deg,#ff86b8,#aa96ef,#72bdf5);
+      box-shadow:0 9px 20px rgba(129,111,203,.18);
+    }
+
+    @media(max-width:560px){
+      .group-head{
+        gap:8px;
+      }
+
+      .group-select-all{
+        min-height:36px;
+        padding:7px 11px;
+        font-size:12px;
+      }
+    }
+
+    .group-head.single-title{
+      justify-content:flex-start;
+    }
 </style>
 <meta content="#fffafc" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="default" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><link href="favicon.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/><meta content="Libby 的生圖詞庫" name="apple-mobile-web-app-title"/></head>
 <body>
@@ -1842,7 +1901,7 @@
 <button class="lang-btn active" data-lang="zh" onclick="setLanguage('zh')" type="button">中文版本</button>
 <button class="lang-btn" data-lang="en" onclick="setLanguage('en')" type="button">English Version</button>
 </div>
-<textarea class="prompt-output" id="promptOutput" placeholder="點選下方的漂亮詞，這裡會自動組成完整提示詞。也可以直接在框內修改內容。" spellcheck="false"></textarea>
+<textarea class="prompt-output" id="promptOutput" placeholder="點選下方的提示詞，這裡會自動組成完整提示詞。也可以直接在框內修改內容。" spellcheck="false"></textarea>
 <div class="builder-actions">
 <button class="primary-action" onclick="copyPromptOutput()" type="button">複製整段</button>
 <button class="secondary-action" onclick="undoLast()" type="button">移除最後一個</button>
@@ -1856,11 +1915,9 @@
 <h2>01｜畫面風格</h2>
 <p class="section-desc">決定整張圖的個性，是柔軟日常、青春純愛，還是高級冷感。</p>
 </div>
-<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
 </div>
 <div class="groups">
-<div class="group">
-<h3>韓系寫真</h3>
+<div class="group"><div class="group-head"><h3>韓系寫真</h3><button class="group-select-all" onclick="toggleGroupSelection(this)" title="全選或取消這個小分類" type="button">全選</button></div>
 <div class="chips">
 <button class="chip" data-en="Korean-style dreamy portrait photography" title="點一下加入組裝器，再點一次取消">韓式唯美寫真</button><button class="chip" data-en="fresh Korean-style portrait photography" title="點一下加入組裝器，再點一次取消">韓系清新寫真</button>
 <button class="chip" data-en="Korean-style natural lifestyle photography" title="點一下加入組裝器，再點一次取消">韓系自然生活感攝影</button><button class="chip" data-en="Korean-style creamy-toned portrait photography" title="點一下加入組裝器，再點一次取消">韓系奶油感寫真</button>
@@ -1869,8 +1926,7 @@
 <button class="chip" data-en="K-pop idol concept photography" title="點一下加入組裝器，再點一次取消">韓國偶像概念照</button><button class="chip" data-en="Korean youthful cinematic aesthetic" title="點一下加入組裝器，再點一次取消">韓系青春電影感</button>
 </div>
 </div>
-<div class="group">
-<h3>日系寫真</h3>
+<div class="group"><div class="group-head"><h3>日系寫真</h3><button class="group-select-all" onclick="toggleGroupSelection(this)" title="全選或取消這個小分類" type="button">全選</button></div>
 <div class="chips">
 <button class="chip" data-en="Japanese-style luminous portrait photography" title="點一下加入組裝器，再點一次取消">日系清透寫真</button><button class="chip" data-en="Japanese airy photography" title="點一下加入組裝器，再點一次取消">日系空氣感攝影</button>
 <button class="chip" data-en="Japanese youthful cinematic aesthetic" title="點一下加入組裝器，再點一次取消">日系青春電影感</button><button class="chip" data-en="Japanese-style candid lifestyle photography" title="點一下加入組裝器，再點一次取消">日系生活抓拍</button>
@@ -1879,8 +1935,7 @@
 <button class="chip" data-en="Japanese healing-style photography" title="點一下加入組裝器，再點一次取消">日系治癒系攝影</button><button class="chip" data-en="Japanese-style negative-space composition" title="點一下加入組裝器，再點一次取消">日系留白構圖</button>
 </div>
 </div>
-<div class="group">
-<h3>電影感</h3>
+<div class="group"><div class="group-head"><h3>電影感</h3><button class="group-select-all" onclick="toggleGroupSelection(this)" title="全選或取消這個小分類" type="button">全選</button></div>
 <div class="chips">
 <button class="chip" data-en="cinematic film still" title="點一下加入組裝器，再點一次取消">電影劇照</button><button class="chip" data-en="cinematic-quality image" title="點一下加入組裝器，再點一次取消">電影級畫面</button>
 <button class="chip" data-en="cinematic visual storytelling" title="點一下加入組裝器，再點一次取消">電影敘事感</button><button class="chip" data-en="romantic cinematic freeze-frame" title="點一下加入組裝器，再點一次取消">浪漫電影定格</button>
@@ -1889,8 +1944,7 @@
 <button class="chip" data-en="cinematic lighting" title="點一下加入組裝器，再點一次取消">電影級光影</button><button class="chip" data-en="cinematic color grading" title="點一下加入組裝器，再點一次取消">電影調色</button>
 </div>
 </div>
-<div class="group">
-<h3>時尚與雜誌感</h3>
+<div class="group"><div class="group-head"><h3>時尚與雜誌感</h3><button class="group-select-all" onclick="toggleGroupSelection(this)" title="全選或取消這個小分類" type="button">全選</button></div>
 <div class="chips">
 <button class="chip" data-en="high-fashion magazine cover" title="點一下加入組裝器，再點一次取消">高級時尚雜誌封面</button><button class="chip" data-en="luxury advertising campaign" title="點一下加入組裝器，再點一次取消">精品廣告大片</button>
 <button class="chip" data-en="luxury brand editorial portrait" title="點一下加入組裝器，再點一次取消">高奢品牌形象照</button><button class="chip" data-en="editorial fashion photography" title="點一下加入組裝器，再點一次取消">編輯式時尚攝影</button>
@@ -1906,43 +1960,37 @@
 <h2>02｜鏡頭與景深</h2>
 <p class="section-desc">日常首選 50mm；想帶到更多空間用 35mm；浪漫特寫則用 85mm。</p>
 </div>
-<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
 </div>
 <div class="groups">
-<div class="group">
-<h3>35mm｜環境與故事</h3>
+<div class="group"><div class="group-head single-title"><h3>35mm｜環境與故事</h3></div>
 <div class="chips">
 <button class="chip" data-en="35mm environmental portrait lens" title="點一下加入組裝器，再點一次取消">35mm 環境人像鏡頭</button><button class="chip" data-en="immersive lifestyle setting" title="點一下加入組裝器，再點一次取消">沉浸式生活場景</button>
 <button class="chip" data-en="natural spatial perspective" title="點一下加入組裝器，再點一次取消">自然空間透視</button><button class="chip" data-en="cinematic documentary aesthetic" title="點一下加入組裝器，再點一次取消">電影紀實感</button>
 <button class="chip" data-en="full presentation of the subject and environment" title="點一下加入組裝器，再點一次取消">人物與環境完整呈現</button><button class="chip" data-en="dynamic wide-angle candid shot" title="點一下加入組裝器，再點一次取消">動態廣角抓拍</button>
 </div>
 </div>
-<div class="group">
-<h3>50mm｜最自然日常</h3>
+<div class="group"><div class="group-head single-title"><h3>50mm｜最自然日常</h3></div>
 <div class="chips">
 <button class="chip" data-en="50mm standard portrait lens" title="點一下加入組裝器，再點一次取消">50mm 標準人像鏡頭</button><button class="chip" data-en="natural eye-level perspective" title="點一下加入組裝器，再點一次取消">自然人眼視角</button>
-<button class="chip" data-en="authentic lifestyle photography" title="點一下加入組裝器，再點一次取消">真實生活感攝影</button><button class="chip" data-en="50mm environmental portrait" title="點一下加入組裝器，再點一次取消">50mm 環境人像</button>
-<button class="chip" data-en="natural proportions" title="點一下加入組裝器，再點一次取消">自然比例</button><button class="chip" data-en="lifestyle documentary aesthetic" title="點一下加入組裝器，再點一次取消">生活紀實感</button>
+<button class="chip" data-en="50mm environmental portrait" title="點一下加入組裝器，再點一次取消">50mm 環境人像</button>
+<button class="chip" data-en="lifestyle documentary aesthetic" title="點一下加入組裝器，再點一次取消">生活紀實感</button>
 </div>
 </div>
-<div class="group">
-<h3>85mm｜浪漫人物特寫</h3>
+<div class="group"><div class="group-head single-title"><h3>85mm｜浪漫人物特寫</h3></div>
 <div class="chips">
 <button class="chip" data-en="85mm portrait lens" title="點一下加入組裝器，再點一次取消">85mm 人像攝影鏡頭</button><button class="chip" data-en="85mm wide-aperture portrait" title="點一下加入組裝器，再點一次取消">85mm 大光圈人像</button>
 <button class="chip" data-en="medium-telephoto portrait compression" title="點一下加入組裝器，再點一次取消">中長焦人像壓縮感</button><button class="chip" data-en="soft and beautiful background bokeh" title="點一下加入組裝器，再點一次取消">柔美背景散景</button>
 <button class="chip" data-en="natural couple close-up" title="點一下加入組裝器，再點一次取消">自然情侶特寫</button><button class="chip" data-en="capturing subtle expressions" title="點一下加入組裝器，再點一次取消">捕捉細微表情</button>
 </div>
 </div>
-<div class="group">
-<h3>105mm 與特殊鏡頭</h3>
+<div class="group"><div class="group-head single-title"><h3>105mm 與特殊鏡頭</h3></div>
 <div class="chips">
 <button class="chip" data-en="105mm medium-telephoto portrait lens" title="點一下加入組裝器，再點一次取消">105mm 中長焦人像鏡頭</button><button class="chip" data-en="105mm creamy bokeh" title="點一下加入組裝器，再點一次取消">105mm 奶油散景</button>
 <button class="chip" data-en="natural candid shot from a distance" title="點一下加入組裝器，再點一次取消">遠距離自然抓拍感</button><button class="chip" data-en="telephoto background compression" title="點一下加入組裝器，再點一次取消">長焦壓縮背景</button>
 <button class="chip" data-en="8mm ultra-wide fisheye lens" title="點一下加入組裝器，再點一次取消">8mm 超廣角魚眼鏡頭</button><button class="chip" data-en="Y2K fisheye selfie" title="點一下加入組裝器，再點一次取消">Y2K 魚眼自拍</button>
 </div>
 </div>
-<div class="group">
-<h3>光圈與景深</h3>
+<div class="group"><div class="group-head single-title"><h3>光圈與景深</h3></div>
 <div class="chips">
 <button class="chip" data-en="f/1.2 ultra-wide aperture" title="點一下加入組裝器，再點一次取消">f/1.2 超大光圈</button><button class="chip" data-en="f/1.4 wide aperture" title="點一下加入組裝器，再點一次取消">f/1.4 大光圈</button>
 <button class="chip" data-en="f/1.8 shallow depth of field" title="點一下加入組裝器，再點一次取消">f/1.8 淺景深</button><button class="chip" data-en="creamy smooth bokeh" title="點一下加入組裝器，再點一次取消">奶油般柔滑散景</button>
@@ -1950,8 +1998,7 @@
 <button class="chip" data-en="smooth depth-of-field transition" title="點一下加入組裝器，再點一次取消">柔和景深過渡</button><button class="chip" data-en="sharp subject with a blurred background" title="點一下加入組裝器，再點一次取消">主體清晰、背景模糊</button>
 </div>
 </div>
-<div class="group">
-<h3>取景範圍</h3>
+<div class="group"><div class="group-head single-title"><h3>取景範圍</h3></div>
 <div class="chips">
 <button class="chip" data-en="extreme facial close-up" title="點一下加入組裝器，再點一次取消">臉部大特寫</button><button class="chip" data-en="close-up framed above the collarbone" title="點一下加入組裝器，再點一次取消">鎖骨以上特寫</button>
 <button class="chip" data-en="upper-body portrait framed above the chest" title="點一下加入組裝器，再點一次取消">胸口以上半身照</button><button class="chip" data-en="medium shot framed above the waist" title="點一下加入組裝器，再點一次取消">腰部以上中景</button>
@@ -1966,13 +2013,11 @@
 <div class="section-head">
 <div>
 <h2>03｜光線</h2>
-<p class="section-desc">漂亮的光比單純加上「8K」更有用。光線決定溫度、情緒與立體感。</p>
+<p class="section-desc">光線會影響畫面的溫度、情緒與立體感，也能讓整體質感更完整。</p>
 </div>
-<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
 </div>
 <div class="groups">
-<div class="group">
-<h3>自然光</h3>
+<div class="group"><div class="group-head single-title"><h3>自然光</h3></div>
 <div class="chips">
 <button class="chip" data-en="soft natural light" title="點一下加入組裝器，再點一次取消">柔和自然光</button><button class="chip" data-en="morning window light" title="點一下加入組裝器，再點一次取消">清晨窗邊光</button>
 <button class="chip" data-en="slanting afternoon sunlight" title="點一下加入組裝器，再點一次取消">午後斜射陽光</button><button class="chip" data-en="soft overcast light" title="點一下加入組裝器，再點一次取消">陰天柔光</button>
@@ -1980,8 +2025,7 @@
 <button class="chip" data-en="dappled tree shadows" title="點一下加入組裝器，再點一次取消">細碎樹影</button><button class="chip" data-en="bright summer daylight" title="點一下加入組裝器，再點一次取消">夏日明亮日光</button>
 </div>
 </div>
-<div class="group">
-<h3>逆光與光暈</h3>
+<div class="group"><div class="group-head single-title"><h3>逆光與光暈</h3></div>
 <div class="chips">
 <button class="chip" data-en="warm sunset backlighting" title="點一下加入組裝器，再點一次取消">暖色夕陽逆光</button><button class="chip" data-en="strong rim lighting" title="點一下加入組裝器，再點一次取消">強烈輪廓光</button>
 <button class="chip" data-en="backlit translucent hair strands" title="點一下加入組裝器，再點一次取消">髮絲透光</button><button class="chip" data-en="golden hair light" title="點一下加入組裝器，再點一次取消">金色髮絲光</button>
@@ -1989,8 +2033,7 @@
 <button class="chip" data-en="glowing edges around the subject" title="點一下加入組裝器，再點一次取消">人物邊緣發亮</button><button class="chip" data-en="sunlit dust particles in the air" title="點一下加入組裝器，再點一次取消">空氣中的微塵被陽光照亮</button>
 </div>
 </div>
-<div class="group">
-<h3>攝影棚光線</h3>
+<div class="group"><div class="group-head single-title"><h3>攝影棚光線</h3></div>
 <div class="chips">
 <button class="chip" data-en="softbox lighting" title="點一下加入組裝器，再點一次取消">柔光箱照明</button><button class="chip" data-en="soft side lighting" title="點一下加入組裝器，再點一次取消">側面柔光</button>
 <button class="chip" data-en="butterfly lighting" title="點一下加入組裝器，再點一次取消">蝴蝶光</button><button class="chip" data-en="Rembrandt lighting" title="點一下加入組裝器，再點一次取消">倫勃朗光</button>
@@ -1998,8 +2041,7 @@
 <button class="chip" data-en="bright high-key photography" title="點一下加入組裝器，再點一次取消">明亮高調攝影</button><button class="chip" data-en="dark luxury lighting" title="點一下加入組裝器，再點一次取消">暗調精品光影</button>
 </div>
 </div>
-<div class="group">
-<h3>夜晚與雨天</h3>
+<div class="group"><div class="group-head single-title"><h3>夜晚與雨天</h3></div>
 <div class="chips">
 <button class="chip" data-en="urban neon lighting" title="點一下加入組裝器，再點一次取消">城市霓虹燈光</button><button class="chip" data-en="warm streetlight glow" title="點一下加入組裝器，再點一次取消">路燈暖光</button>
 <button class="chip" data-en="wet pavement reflections on a rainy night" title="點一下加入組裝器，再點一次取消">雨夜濕地反光</button><button class="chip" data-en="cool television screen light" title="點一下加入組裝器，再點一次取消">電視螢幕冷光</button>
@@ -2015,40 +2057,35 @@
 <h2>04｜濾鏡與色調</h2>
 <p class="section-desc">同一個場景換個色調，就能從清新戀愛片切換成冷感雜誌封面。</p>
 </div>
-<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
 </div>
 <div class="groups">
-<div class="group">
-<h3>富士與膠片</h3>
+<div class="group"><div class="group-head single-title"><h3>富士與膠片</h3></div>
 <div class="chips">
 <button class="chip" data-en="Fujifilm film colors" title="點一下加入組裝器，再點一次取消">Fujifilm 底片色彩</button><button class="chip" data-en="Fujifilm film tones" title="點一下加入組裝器，再點一次取消">富士膠片色調</button>
 <button class="chip" data-en="Classic Chrome film simulation" title="點一下加入組裝器，再點一次取消">Classic Chrome 經典正片色調</button><button class="chip" data-en="Classic Negative film simulation" title="點一下加入組裝器，再點一次取消">Classic Negative 經典負片色調</button>
 <button class="chip" data-en="Pro 400H fresh skin tones" title="點一下加入組裝器，再點一次取消">Pro 400H 清新膚色</button><button class="chip" data-en="straight-out-of-camera Fujifilm look" title="點一下加入組裝器，再點一次取消">富士相機直出感</button>
 </div>
 </div>
-<div class="group">
-<h3>柯達暖色</h3>
+<div class="group"><div class="group-head single-title"><h3>柯達暖色</h3></div>
 <div class="chips">
 <button class="chip" data-en="Kodak Portra 400 color palette" title="點一下加入組裝器，再點一次取消">Kodak Portra 400 色調</button><button class="chip" data-en="warm and soft skin tones" title="點一下加入組裝器，再點一次取消">溫暖柔和膚色</button>
 <button class="chip" data-en="creamy yellow highlights" title="點一下加入組裝器，再點一次取消">奶油黃色高光</button><button class="chip" data-en="vintage warm-toned film" title="點一下加入組裝器，再點一次取消">復古暖色底片</button>
 <button class="chip" data-en="Kodak cinematic film texture" title="點一下加入組裝器，再點一次取消">柯達電影底片質感</button><button class="chip" data-en="natural rosy skin tones" title="點一下加入組裝器，再點一次取消">自然紅潤膚色</button>
 </div>
 </div>
-<div class="group">
-<h3>冷色與高級感</h3>
+<div class="group"><div class="group-head single-title"><h3>冷色與高級感</h3></div>
 <div class="chips">
 <button class="chip" data-en="cool blue-gray color palette" title="點一下加入組裝器，再點一次取消">清冷藍灰色調</button><button class="chip" data-en="low-saturation cool tones" title="點一下加入組裝器，再點一次取消">低飽和冷色調</button>
 <button class="chip" data-en="icy mist color palette" title="點一下加入組裝器，再點一次取消">冰霧感色彩</button><button class="chip" data-en="luxurious silver-gray aesthetic" title="點一下加入組裝器，再點一次取消">銀灰高級感</button>
-<button class="chip" data-en="cool porcelain skin tone" title="點一下加入組裝器，再點一次取消">冷白膚色</button><button class="chip" data-en="teal-blue cinematic color grading" title="點一下加入組裝器，再點一次取消">青藍電影調色</button>
+<button class="chip" data-en="natural cool-toned skin" title="點一下加入組裝器，再點一次取消">冷調自然膚色</button><button class="chip" data-en="teal-blue cinematic color grading" title="點一下加入組裝器，再點一次取消">青藍電影調色</button>
 </div>
 </div>
-<div class="group">
-<h3>暖色與粉色</h3>
+<div class="group"><div class="group-head single-title"><h3>暖色與粉色</h3></div>
 <div class="chips">
 <button class="chip" data-en="creamy warm color palette" title="點一下加入組裝器，再點一次取消">奶油暖色調</button><button class="chip" data-en="honey-gold tones" title="點一下加入組裝器，再點一次取消">蜂蜜金色調</button>
 <button class="chip" data-en="apricot-toned soft light" title="點一下加入組裝器，再點一次取消">杏色柔光</button><button class="chip" data-en="champagne-gold tones" title="點一下加入組裝器，再點一次取消">香檳金色調</button>
 <button class="chip" data-en="cherry-blossom pink palette" title="點一下加入組裝器，再點一次取消">櫻花粉色調</button><button class="chip" data-en="dreamy pink-to-blue gradient" title="點一下加入組裝器，再點一次取消">粉藍夢幻漸層</button>
-<button class="chip" data-en="AX-11 fluorescent pink" title="點一下加入組裝器，再點一次取消">AX-11 螢光粉紅色</button><button class="chip" data-en="soft hazy pink-purple tones" title="點一下加入組裝器，再點一次取消">柔霧粉紫色調</button>
+<button class="chip" data-en="soft hazy pink-purple tones" title="點一下加入組裝器，再點一次取消">柔霧粉紫色調</button>
 </div>
 </div>
 </div>
@@ -2059,11 +2096,9 @@
 <h2>05｜構圖與鏡位</h2>
 <p class="section-desc">讓人物不要像站在證件照裡。前景、留白與鏡位會讓畫面開始說故事。</p>
 </div>
-<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
 </div>
 <div class="groups">
-<div class="group">
-<h3>常用構圖</h3>
+<div class="group"><div class="group-head single-title"><h3>常用構圖</h3></div>
 <div class="chips">
 <button class="chip" data-en="rule-of-thirds composition" title="點一下加入組裝器，再點一次取消">三分法則構圖</button><button class="chip" data-en="centered symmetrical composition" title="點一下加入組裝器，再點一次取消">中央對稱構圖</button>
 <button class="chip" data-en="golden-ratio composition" title="點一下加入組裝器，再點一次取消">黃金比例構圖</button><button class="chip" data-en="diagonal composition" title="點一下加入組裝器，再點一次取消">對角線構圖</button>
@@ -2071,16 +2106,14 @@
 <button class="chip" data-en="foreground-obstruction composition" title="點一下加入組裝器，再點一次取消">前景遮擋構圖</button><button class="chip" data-en="generous negative-space composition" title="點一下加入組裝器，再點一次取消">大量留白構圖</button>
 </div>
 </div>
-<div class="group">
-<h3>人物位置</h3>
+<div class="group"><div class="group-head single-title"><h3>人物位置</h3></div>
 <div class="chips">
 <button class="chip" data-en="subject positioned in the lower half of the frame" title="點一下加入組裝器，再點一次取消">人物位於畫面下半部</button><button class="chip" data-en="subject positioned off-center" title="點一下加入組裝器，再點一次取消">人物偏離畫面中心</button>
 <button class="chip" data-en="negative space in the direction of the gaze" title="點一下加入組裝器，再點一次取消">視線方向保留空間</button><button class="chip" data-en="large amount of empty space above the subject" title="點一下加入組裝器，再點一次取消">上方保留大量空白</button>
 <button class="chip" data-en="smaller subject with a larger environmental presence" title="點一下加入組裝器，再點一次取消">人物略小、環境占比更高</button><button class="chip" data-en="visual emphasis centered on the subject" title="點一下加入組裝器，再點一次取消">視覺重點集中於人物</button>
 </div>
 </div>
-<div class="group">
-<h3>鏡位</h3>
+<div class="group"><div class="group-head single-title"><h3>鏡位</h3></div>
 <div class="chips">
 <button class="chip" data-en="low-angle shot" title="點一下加入組裝器，再點一次取消">低機位仰拍</button><button class="chip" data-en="high-angle shot" title="點一下加入組裝器，再點一次取消">高機位俯拍</button>
 <button class="chip" data-en="eye-level camera angle" title="點一下加入組裝器，再點一次取消">平視角度拍攝</button><button class="chip" data-en="slightly angled side view" title="點一下加入組裝器，再點一次取消">微微側拍</button>
@@ -2088,12 +2121,11 @@
 <button class="chip" data-en="photographer's candid shot from a distance" title="點一下加入組裝器，再點一次取消">攝影師遠距離抓拍</button><button class="chip" data-en="natural paparazzi-style composition" title="點一下加入組裝器，再點一次取消">偷拍般的自然構圖</button>
 </div>
 </div>
-<div class="group">
-<h3>畫面節奏</h3>
+<div class="group"><div class="group-head single-title"><h3>畫面節奏</h3></div>
 <div class="chips">
 <button class="chip" data-en="candid shot captured mid-action" title="點一下加入組裝器，再點一次取消">動作進行中的抓拍</button><button class="chip" data-en="subtle motion blur" title="點一下加入組裝器，再點一次取消">輕微動態模糊</button>
 <button class="chip" data-en="an accidental freeze-frame from a film" title="點一下加入組裝器，再點一次取消">像電影中的偶然定格</button><button class="chip" data-en="unposed and natural" title="點一下加入組裝器，再點一次取消">非刻意擺拍</button>
-<button class="chip" data-en="natural visual flow" title="點一下加入組裝器，再點一次取消">自然視線流動</button><button class="chip" data-en="clear foreground, midground, and background separation" title="點一下加入組裝器，再點一次取消">前中後景層次清楚</button>
+<button class="chip" data-en="clear foreground, midground, and background separation" title="點一下加入組裝器，再點一次取消">前中後景層次清楚</button>
 </div>
 </div>
 </div>
@@ -2104,11 +2136,9 @@
 <h2>06｜畫面質感與畫質</h2>
 <p class="section-desc">日常圖不宜太銳利或磨皮過重。真實紋理加一點膠片顆粒通常更耐看。</p>
 </div>
-<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
 </div>
 <div class="groups">
-<div class="group">
-<h3>真實攝影</h3>
+<div class="group"><div class="group-head"><h3>真實攝影</h3><button class="group-select-all" onclick="toggleGroupSelection(this)" title="全選或取消這個小分類" type="button">全選</button></div>
 <div class="chips">
 <button class="chip" data-en="photorealistic photography" title="點一下加入組裝器，再點一次取消">真實攝影</button><button class="chip" data-en="realistic portrait photography" title="點一下加入組裝器，再點一次取消">寫實人像攝影</button>
 <button class="chip" data-en="natural skin texture" title="點一下加入組裝器，再點一次取消">自然皮膚紋理</button><button class="chip" data-en="fine visible pores" title="點一下加入組裝器，再點一次取消">細緻毛孔</button>
@@ -2116,8 +2146,7 @@
 <button class="chip" data-en="accurate human proportions" title="點一下加入組裝器，再點一次取消">精準人體比例</button><button class="chip" data-en="natural hand poses" title="點一下加入組裝器，再點一次取消">自然手部姿勢</button>
 </div>
 </div>
-<div class="group">
-<h3>柔美與空氣感</h3>
+<div class="group"><div class="group-head single-title"><h3>柔美與空氣感</h3></div>
 <div class="chips">
 <button class="chip" data-en="soft-focus filter" title="點一下加入組裝器，再點一次取消">柔焦濾鏡</button><button class="chip" data-en="soft dreamy haze" title="點一下加入組裝器，再點一次取消">朦朧夢幻感</button>
 <button class="chip" data-en="airy atmosphere" title="點一下加入組裝器，再點一次取消">空氣感</button><button class="chip" data-en="delicate mist" title="點一下加入組裝器，再點一次取消">輕柔薄霧</button>
@@ -2125,8 +2154,7 @@
 <button class="chip" data-en="low-contrast image" title="點一下加入組裝器，再點一次取消">低對比畫面</button><button class="chip" data-en="romantic glow" title="點一下加入組裝器，再點一次取消">浪漫光暈</button>
 </div>
 </div>
-<div class="group">
-<h3>底片與數位懷舊</h3>
+<div class="group"><div class="group-head single-title"><h3>底片與數位懷舊</h3></div>
 <div class="chips">
 <button class="chip" data-en="35mm film photography" title="點一下加入組裝器，再點一次取消">35mm 膠片攝影</button><button class="chip" data-en="fine film grain" title="點一下加入組裝器，再點一次取消">細膩底片顆粒</button>
 <button class="chip" data-en="subtle light leak" title="點一下加入組裝器，再點一次取消">微弱漏光</button><button class="chip" data-en="subtle color shift" title="點一下加入組裝器，再點一次取消">輕微色偏</button>
@@ -2134,13 +2162,12 @@
 <button class="chip" data-en="early-2000s digital photography" title="點一下加入組裝器，再點一次取消">千禧年代數位攝影</button><button class="chip" data-en="faded vintage-photo colors" title="點一下加入組裝器，再點一次取消">老照片色彩褪色感</button>
 </div>
 </div>
-<div class="group">
-<h3>高品質詞</h3>
+<div class="group"><div class="group-head"><h3>高品質詞</h3><button class="group-select-all" onclick="toggleGroupSelection(this)" title="全選或取消這個小分類" type="button">全選</button></div>
 <div class="chips">
 <button class="chip" data-en="masterpiece" title="點一下加入組裝器，再點一次取消">傑作</button><button class="chip" data-en="best quality" title="點一下加入組裝器，再點一次取消">最佳品質</button>
 <button class="chip" data-en="ultra-fine details" title="點一下加入組裝器，再點一次取消">超精緻細節</button><button class="chip" data-en="high resolution" title="點一下加入組裝器，再點一次取消">高解析度</button>
 <button class="chip" data-en="8K" title="點一下加入組裝器，再點一次取消">8K</button><button class="chip" data-en="HDR" title="點一下加入組裝器，再點一次取消">HDR</button>
-<button class="chip" data-en="cinematic-quality image" title="點一下加入組裝器，再點一次取消">電影級畫面</button><button class="chip" data-en="professional color grading" title="點一下加入組裝器，再點一次取消">專業色彩分級</button>
+<button class="chip" data-en="professional color grading" title="點一下加入組裝器，再點一次取消">專業色彩分級</button>
 </div>
 </div>
 </div>
@@ -2152,11 +2179,9 @@
 <h2>07｜背景、散景與乾淨畫面</h2>
 <p class="section-desc">控制背景不要搶戲，也能避免模型塞進路人、文字或奇怪的家具。</p>
 </div>
-<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
 </div>
 <div class="groups">
-<div class="group">
-<h3>散景與前景</h3>
+<div class="group"><div class="group-head single-title"><h3>散景與前景</h3></div>
 <div class="chips">
 <button class="chip" data-en="creamy bokeh" title="點一下加入組裝器，再點一次取消">奶油散景</button><button class="chip" data-en="circular bokeh lights" title="點一下加入組裝器，再點一次取消">圓形光斑</button>
 <button class="chip" data-en="city-light bokeh" title="點一下加入組裝器，再點一次取消">城市燈光散景</button><button class="chip" data-en="blurred flowers in the foreground" title="點一下加入組裝器，再點一次取消">花朵前景虛化</button>
@@ -2164,10 +2189,9 @@
 <button class="chip" data-en="foreground foliage partially framing the subject" title="點一下加入組裝器，再點一次取消">前景枝葉遮擋</button><button class="chip" data-en="dappled patches of sunlight" title="點一下加入組裝器，再點一次取消">細碎陽光斑駁</button>
 </div>
 </div>
-<div class="group">
-<h3>乾淨畫面</h3>
+<div class="group"><div class="group-head single-title"><h3>乾淨畫面</h3></div>
 <div class="chips">
-<button class="chip" data-en="clean and minimal image" title="點一下加入組裝器，再點一次取消">畫面乾淨簡潔</button><button class="chip" data-en="restrained background styling" title="點一下加入組裝器，再點一次取消">背景陳設適量</button>
+<button class="chip" data-en="clean and minimal image" title="點一下加入組裝器，再點一次取消">畫面乾淨簡潔</button><button class="chip" data-en="simple background styling with a moderate number of objects" title="點一下加入組裝器，再點一次取消">背景陳設簡潔、數量適中</button>
 <button class="chip" data-en="tidy environment" title="點一下加入組裝器，再點一次取消">空間整潔</button><button class="chip" data-en="soft-focus background that does not distract" title="點一下加入組裝器，再點一次取消">背景柔焦且不搶戲</button>
 <button class="chip" data-en="no other people" title="點一下加入組裝器，再點一次取消">不出現其他人物</button><button class="chip" data-en="no passersby" title="點一下加入組裝器，再點一次取消">不出現路人</button>
 <button class="chip" data-en="no text or signage" title="點一下加入組裝器，再點一次取消">不出現文字招牌</button><button class="chip" data-en="no unnecessary objects" title="點一下加入組裝器，再點一次取消">不出現多餘物件</button>
@@ -2181,11 +2205,9 @@
 <h2>08｜避雷與負面提示詞</h2>
 <p class="section-desc">適合放在提示詞最後，尤其是人物、手部與「不要拼圖」這類限制。</p>
 </div>
-<button class="copy-section" onclick="copySection(this)" title="將本區詞彙全部加入或取消">全選本區</button>
 </div>
 <div class="groups">
-<div class="group">
-<h3>人體與五官</h3>
+<div class="group"><div class="group-head"><h3>人體與五官</h3><button class="group-select-all" onclick="toggleGroupSelection(this)" title="全選或取消這個小分類" type="button">全選</button></div>
 <div class="chips">
 <button class="chip" data-en="avoid incorrect finger counts" title="點一下加入組裝器，再點一次取消">避免手指數量錯誤</button><button class="chip" data-en="avoid extra hands, feet, or limbs" title="點一下加入組裝器，再點一次取消">避免多手、多腳、多肢體</button>
 <button class="chip" data-en="avoid deformed hands" title="點一下加入組裝器，再點一次取消">避免手部變形</button><button class="chip" data-en="avoid distorted joints" title="點一下加入組裝器，再點一次取消">避免關節扭曲</button>
@@ -2193,8 +2215,7 @@
 <button class="chip" data-en="avoid merged bodies" title="點一下加入組裝器，再點一次取消">避免人物融合</button><button class="chip" data-en="avoid incorrect body proportions" title="點一下加入組裝器，再點一次取消">避免身體比例失衡</button>
 </div>
 </div>
-<div class="group">
-<h3>質感與版面</h3>
+<div class="group"><div class="group-head"><h3>質感與版面</h3><button class="group-select-all" onclick="toggleGroupSelection(this)" title="全選或取消這個小分類" type="button">全選</button></div>
 <div class="chips">
 <button class="chip" data-en="avoid plastic-looking skin" title="點一下加入組裝器，再點一次取消">避免塑膠皮膚</button><button class="chip" data-en="avoid excessive skin smoothing" title="點一下加入組裝器，再點一次取消">避免過度磨皮</button>
 <button class="chip" data-en="avoid oversized eyes" title="點一下加入組裝器，再點一次取消">避免眼睛過度放大</button><button class="chip" data-en="avoid stiff expressions" title="點一下加入組裝器，再點一次取消">避免僵硬表情</button>
@@ -2447,6 +2468,7 @@ function renderPrompt(){
     btn.classList.toggle('active', btn.dataset.lang === currentLanguage);
   });
   refreshSelectedState();
+  refreshGroupButtons();
   saveBuilder();
 }
 
@@ -2459,10 +2481,50 @@ function saveBuilder(){
   }
 }
 
+
+function migrateSavedItems(items){
+  const deletedLabels = new Set([
+    '自然比例',
+    '自然視線流動',
+    '真實生活感攝影',
+    'AX-11 螢光粉紅色'
+  ]);
+
+  return (items || [])
+    .filter(item=>{
+      if(deletedLabels.has(item.zh)) return false;
+
+      /* 只移除位於高品質詞中的重複「電影級畫面」無法從舊資料辨識來源，
+         保留已儲存的單一項目，避免誤刪使用者在 01 區選的版本。 */
+      return true;
+    })
+    .map(item=>{
+      if(item.zh === '冷白膚色'){
+        return {
+          ...item,
+          id:'chip:冷調自然膚色',
+          zh:'冷調自然膚色',
+          en:'natural cool-toned skin'
+        };
+      }
+
+      if(item.zh === '背景陳設適量'){
+        return {
+          ...item,
+          id:'chip:背景陳設簡潔、數量適中',
+          zh:'背景陳設簡潔、數量適中',
+          en:'simple background styling with a moderate number of objects'
+        };
+      }
+
+      return item;
+    });
+}
+
 function loadBuilder(){
   try{
     const saved = JSON.parse(localStorage.getItem('promptBuilderItems') || '[]');
-    if(Array.isArray(saved)) selectedItems = saved;
+    if(Array.isArray(saved)) selectedItems = migrateSavedItems(saved);
   }catch(e){
     selectedItems = [];
   }
@@ -2537,6 +2599,40 @@ function directCopyCombo(btn){
   }, 1100);
 }
 
+
+function toggleGroupSelection(btn){
+  const group = btn.closest('.group');
+  const chips = [...group.querySelectorAll('.chip:not(.hidden-by-search)')];
+
+  if(!chips.length){
+    showToast('這一組目前沒有可選詞彙');
+    return;
+  }
+
+  const allSelected = chips.every(chip =>
+    hasItem('chip:' + chip.textContent.trim())
+  );
+
+  chips.forEach(chip=>{
+    const zh = chip.textContent.trim();
+    const id = 'chip:' + zh;
+
+    if(allSelected){
+      removeItem(id);
+    }else{
+      addItem({
+        id,
+        type:'chip',
+        zh,
+        en:chip.dataset.en || zh
+      });
+    }
+  });
+
+  renderPrompt();
+  showToast(allSelected ? '已取消這一組' : '已全選這一組');
+}
+
 function copyCombo(btn){
   const combo = btn.closest('.combo');
   const textEl = combo.querySelector('.combo-text');
@@ -2579,6 +2675,22 @@ function clearBuilder(){
   selectedItems = [];
   renderPrompt();
   showToast('已清空組裝器');
+}
+
+
+function refreshGroupButtons(){
+  document.querySelectorAll('.group').forEach(group=>{
+    const btn = group.querySelector('.group-select-all');
+    if(!btn) return;
+
+    const chips = [...group.querySelectorAll('.chip:not(.hidden-by-search)')];
+    const allSelected = chips.length > 0 && chips.every(chip =>
+      hasItem('chip:' + chip.textContent.trim())
+    );
+
+    btn.classList.toggle('active', allSelected);
+    btn.textContent = allSelected ? '取消' : '全選';
+  });
 }
 
 function refreshSelectedState(){
