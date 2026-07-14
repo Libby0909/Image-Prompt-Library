@@ -1879,7 +1879,7 @@
 </header>
 <nav class="nav"><a href="#prompt-builder">提示詞組裝器</a>
 <a href="#style">風格</a>
-<a href="#lens">鏡頭</a>
+<a href="#ratio">比例</a><a href="#lens">鏡頭</a>
 <a href="#light">光線</a>
 <a href="#color">色調</a>
 <a href="#composition">構圖</a>
@@ -1954,10 +1954,33 @@
 </div>
 </div>
 </section>
-<section class="section searchable-block" id="lens">
+<section class="section searchable-block" id="ratio">
 <div class="section-head">
 <div>
-<h2>02｜鏡頭與景深</h2>
+<h2>02｜尺寸與畫面比例</h2>
+<p class="section-desc">選擇最符合用途的畫面比例。此區為單選，選擇新比例時會自動取消上一個比例。</p>
+</div>
+</div>
+<div class="groups">
+<div class="group">
+<div class="group-head single-title">
+<h3>常用比例</h3>
+</div>
+<div class="chips">
+<button class="chip ratio-chip" data-en="vertical 9:16 composition, smartphone wallpaper aspect ratio" title="此區為單選，點一下加入，再點一次取消">9:16 手機直式、桌布</button>
+<button class="chip ratio-chip" data-en="horizontal 16:9 composition, cinematic widescreen aspect ratio" title="此區為單選，點一下加入，再點一次取消">16:9 橫式電影畫面</button>
+<button class="chip ratio-chip" data-en="square 1:1 composition, profile picture and social post aspect ratio" title="此區為單選，點一下加入，再點一次取消">1:1 正方形頭貼、貼文</button>
+<button class="chip ratio-chip" data-en="vertical 4:5 composition, social media portrait aspect ratio" title="此區為單選，點一下加入，再點一次取消">4:5 社群直式人像</button>
+<button class="chip ratio-chip" data-en="classic vertical 3:4 photography composition" title="此區為單選，點一下加入，再點一次取消">3:4 經典直式攝影</button><button class="chip ratio-chip" data-en="classic horizontal 4:3 photography composition" title="此區為單選，點一下加入，再點一次取消">4:3 經典橫式攝影</button>
+<button class="chip ratio-chip" data-en="vertical 2:3 composition for posters and full-body portraits" title="此區為單選，點一下加入，再點一次取消">2:3 海報、全身人像</button>
+<button class="chip ratio-chip" data-en="horizontal 3:2 camera photography composition" title="此區為單選，點一下加入，再點一次取消">3:2 相機橫幅攝影</button>
+</div>
+</div>
+</div>
+</section><section class="section searchable-block" id="lens">
+<div class="section-head">
+<div>
+<h2>03｜鏡頭與景深</h2>
 <p class="section-desc">日常首選 50mm；想帶到更多空間用 35mm；浪漫特寫則用 85mm。</p>
 </div>
 </div>
@@ -2012,7 +2035,7 @@
 <section class="section searchable-block" id="light">
 <div class="section-head">
 <div>
-<h2>03｜光線</h2>
+<h2>04｜光線</h2>
 <p class="section-desc">光線會影響畫面的溫度、情緒與立體感，也能讓整體質感更完整。</p>
 </div>
 </div>
@@ -2054,7 +2077,7 @@
 <section class="section searchable-block" id="color">
 <div class="section-head">
 <div>
-<h2>04｜濾鏡與色調</h2>
+<h2>05｜濾鏡與色調</h2>
 <p class="section-desc">同一個場景換個色調，就能從清新戀愛片切換成冷感雜誌封面。</p>
 </div>
 </div>
@@ -2093,7 +2116,7 @@
 <section class="section searchable-block" id="composition">
 <div class="section-head">
 <div>
-<h2>05｜構圖與鏡位</h2>
+<h2>06｜構圖與鏡位</h2>
 <p class="section-desc">讓人物不要像站在證件照裡。前景、留白與鏡位會讓畫面開始說故事。</p>
 </div>
 </div>
@@ -2133,7 +2156,7 @@
 <section class="section searchable-block" id="texture">
 <div class="section-head">
 <div>
-<h2>06｜畫面質感與畫質</h2>
+<h2>07｜畫面質感與畫質</h2>
 <p class="section-desc">日常圖不宜太銳利或磨皮過重。真實紋理加一點膠片顆粒通常更耐看。</p>
 </div>
 </div>
@@ -2176,7 +2199,7 @@
 <section class="section searchable-block" id="background">
 <div class="section-head">
 <div>
-<h2>07｜背景、散景與乾淨畫面</h2>
+<h2>08｜背景、散景與乾淨畫面</h2>
 <p class="section-desc">控制背景不要搶戲，也能避免模型塞進路人、文字或奇怪的家具。</p>
 </div>
 </div>
@@ -2202,7 +2225,7 @@
 <section class="section searchable-block" id="negative">
 <div class="section-head">
 <div>
-<h2>08｜避雷與負面提示詞</h2>
+<h2>09｜避雷與負面提示詞</h2>
 <p class="section-desc">適合放在提示詞最後，尤其是人物、手部與「不要拼圖」這類限制。</p>
 </div>
 </div>
@@ -2228,7 +2251,7 @@
 <section class="section searchable-block" id="universal-combos">
 <div class="section-head">
 <div>
-<h2>09｜漂亮萬用組合</h2>
+<h2>10｜漂亮萬用組合</h2>
 <p class="section-desc">這些組合不綁定場景或主題，可以直接接在任何人物、服裝、地點或互動描述後面。</p>
 </div>
 </div>
@@ -2309,7 +2332,7 @@
 <section class="section searchable-block" id="combos">
 <div class="section-head">
 <div>
-<h2>10｜情境推薦組合</h2>
+<h2>11｜情境推薦組合</h2>
 <p class="section-desc">下面都是可直接貼進 GPT 生圖的完整組合。</p>
 </div>
 </div>
@@ -2546,6 +2569,28 @@ function removeItem(id){
   selectedItems = selectedItems.filter(item=>item.id!==id);
 }
 
+
+function toggleRatioChip(chip){
+  const zh = chip.textContent.trim();
+  const id = 'chip:' + zh;
+  const wasSelected = hasItem(id);
+
+  document.querySelectorAll('.ratio-chip').forEach(other=>{
+    removeItem('chip:' + other.textContent.trim());
+  });
+
+  if(!wasSelected){
+    addItem({
+      id,
+      type:'chip',
+      zh,
+      en:chip.dataset.en || zh
+    });
+  }
+
+  renderPrompt();
+}
+
 function toggleChip(chip){
   const zh = chip.textContent.trim();
   const id = 'chip:' + zh;
@@ -2558,7 +2603,13 @@ function toggleChip(chip){
 }
 
 document.querySelectorAll('.chip').forEach(chip=>{
-  chip.addEventListener('click', ()=>toggleChip(chip));
+  chip.addEventListener('click', ()=>{
+    if(chip.classList.contains('ratio-chip')){
+      toggleRatioChip(chip);
+    }else{
+      toggleChip(chip);
+    }
+  });
 });
 
 function copySection(btn){
