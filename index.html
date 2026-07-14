@@ -1871,110 +1871,13 @@
     .group-head.single-title{
       justify-content:flex-start;
     }
-
-
-/* ===== 比例區塊寬版排列與手機導覽整齊化 ===== */
-
-/* 電腦版：比例區完整使用整行寬度 */
-#ratio .groups{
-  grid-template-columns:1fr !important;
-}
-
-#ratio .group{
-  width:100% !important;
-  max-width:none !important;
-}
-
-#ratio .chips{
-  display:grid !important;
-  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
-  gap:10px !important;
-}
-
-#ratio .chip{
-  width:100% !important;
-  min-height:46px;
-  display:flex !important;
-  align-items:center;
-  justify-content:center;
-  text-align:center !important;
-}
-
-/* 中等寬度：比例按鈕三欄 */
-@media (max-width:900px) and (min-width:761px){
-  #ratio .chips{
-    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-  }
-}
-
-/* 手機版：導覽固定兩欄，組裝器獨佔一整列 */
-@media(max-width:760px){
-  .nav{
-    width:calc(100% - 28px) !important;
-    max-width:560px !important;
-    margin:16px auto 0 !important;
-    padding:0 !important;
-    display:grid !important;
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:10px !important;
-    overflow:visible !important;
-  }
-
-  .nav a{
-    width:100% !important;
-    min-width:0 !important;
-    min-height:48px !important;
-    padding:10px 8px !important;
-    display:flex !important;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    white-space:normal !important;
-    line-height:1.25 !important;
-    font-size:14px !important;
-  }
-
-  .nav a:first-child{
-    grid-column:1 / -1;
-    min-height:52px !important;
-    font-size:15px !important;
-  }
-
-  #ratio .chips{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:8px !important;
-  }
-
-  #ratio .chip{
-    min-height:48px;
-    padding:9px 8px !important;
-    font-size:13px !important;
-  }
-}
-
-/* 極窄手機維持兩欄，但縮小字級，避免文字擠壓 */
-@media(max-width:360px){
-  .nav{
-    gap:8px !important;
-  }
-
-  .nav a{
-    min-height:44px !important;
-    font-size:12.5px !important;
-    padding:8px 6px !important;
-  }
-
-  #ratio .chip{
-    font-size:12px !important;
-  }
-}
 </style>
 <meta content="#fffafc" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="default" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><link href="favicon.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/><meta content="Libby 的生圖詞庫" name="apple-mobile-web-app-title"/></head>
 <body>
 <header aria-label="Libby 的生圖詞庫" class="hero">
 <h1><span class="gradient-text">Libby 的生圖詞庫</span></h1>
 </header>
-<nav class="nav"><a href="#prompt-builder">提示詞組裝器</a>
+<nav class="nav">
 <a href="#style">風格</a>
 <a href="#ratio">比例</a><a href="#lens">鏡頭</a>
 <a href="#light">光線</a>
