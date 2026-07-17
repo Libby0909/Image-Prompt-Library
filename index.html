@@ -1649,7 +1649,6 @@
     }
 
     .chip.selected{
-      padding-left:35px !important;
       background:
         linear-gradient(135deg,#ff86b8 0%,#ae96ef 52%,#72bdf5 100%) !important;
       box-shadow:
@@ -1658,14 +1657,8 @@
     }
 
     .chip.selected::before{
-      content:"♡";
-      position:absolute;
-      left:13px;
-      top:50%;
-      transform:translateY(-50%);
-      color:white;
-      font-size:14px;
-      font-weight:900;
+      content:none !important;
+      display:none !important;
     }
 
     .copy-section{
@@ -1787,7 +1780,7 @@
       }
 
       .chip.selected{
-        padding-left:32px !important;
+        padding:9px 12px !important;
       }
 
       .combo{
@@ -1884,6 +1877,7 @@
 <a href="#color">色調</a>
 <a href="#composition">構圖</a>
 <a href="#texture">質感</a>
+<a href="#background">背景</a>
 <a href="#negative">避雷詞</a>
 <a href="#universal-combos">漂亮萬用組合</a>
 <a href="#combos">情境推薦組合</a>
@@ -1907,7 +1901,7 @@
 <button class="secondary-action" onclick="undoLast()" type="button">移除最後一個</button>
 <button class="ghost-action" onclick="clearBuilder()" type="button">清空全部</button>
 </div>
-<div class="builder-note"><b>使用方式：</b>先選風格、鏡頭、光線、構圖與質感，再加入背景或限制詞。切換語言時，框內會自動換成對應版本。</div>
+<div class="builder-note"><b>使用方式：</b>先選比例與版型，再搭配風格、鏡頭、光線、構圖與質感，最後加入背景或限制詞。切換語言時，框內會自動換成對應版本。</div>
 </section>
 <section class="section searchable-block" id="style">
 <div class="section-head">
@@ -1958,7 +1952,7 @@
 <div class="section-head">
 <div>
 <h2>02｜尺寸與畫面比例</h2>
-<p class="section-desc">選擇最符合用途的畫面比例。此區為單選，選擇新比例時會自動取消上一個比例。</p>
+<p class="section-desc">先選擇畫面比例，再選擇需要的分格或特色版型。比例與版型可同時使用，各自為單選。</p>
 </div>
 </div>
 <div class="groups">
@@ -1967,13 +1961,35 @@
 <h3>常用比例</h3>
 </div>
 <div class="chips">
-<button class="chip ratio-chip" data-en="vertical 9:16 composition, smartphone wallpaper aspect ratio" title="此區為單選，點一下加入，再點一次取消">9:16 手機直式、桌布</button>
-<button class="chip ratio-chip" data-en="horizontal 16:9 composition, cinematic widescreen aspect ratio" title="此區為單選，點一下加入，再點一次取消">16:9 橫式電影畫面</button>
-<button class="chip ratio-chip" data-en="square 1:1 composition, profile picture and social post aspect ratio" title="此區為單選，點一下加入，再點一次取消">1:1 正方形頭貼、貼文</button>
-<button class="chip ratio-chip" data-en="vertical 4:5 composition, social media portrait aspect ratio" title="此區為單選，點一下加入，再點一次取消">4:5 社群直式人像</button>
-<button class="chip ratio-chip" data-en="classic vertical 3:4 photography composition" title="此區為單選，點一下加入，再點一次取消">3:4 經典直式攝影</button><button class="chip ratio-chip" data-en="classic horizontal 4:3 photography composition" title="此區為單選，點一下加入，再點一次取消">4:3 經典橫式攝影</button>
-<button class="chip ratio-chip" data-en="vertical 2:3 composition for posters and full-body portraits" title="此區為單選，點一下加入，再點一次取消">2:3 海報、全身人像</button>
-<button class="chip ratio-chip" data-en="horizontal 3:2 camera photography composition" title="此區為單選，點一下加入，再點一次取消">3:2 相機橫幅攝影</button>
+<button class="chip ratio-chip" data-en="vertical 9:16 composition, smartphone wallpaper aspect ratio" title="手機直式、桌布｜此區為單選，點一下加入，再點一次取消">9:16</button>
+<button class="chip ratio-chip" data-en="horizontal 16:9 composition, cinematic widescreen aspect ratio" title="橫式電影畫面｜此區為單選，點一下加入，再點一次取消">16:9</button>
+<button class="chip ratio-chip" data-en="square 1:1 composition, profile picture and social post aspect ratio" title="正方形頭貼、貼文｜此區為單選，點一下加入，再點一次取消">1:1</button>
+<button class="chip ratio-chip" data-en="vertical 4:5 composition, social media portrait aspect ratio" title="社群直式人像｜此區為單選，點一下加入，再點一次取消">4:5</button>
+<button class="chip ratio-chip" data-en="classic vertical 3:4 photography composition" title="經典直式攝影｜此區為單選，點一下加入，再點一次取消">3:4</button><button class="chip ratio-chip" data-en="classic horizontal 4:3 photography composition" title="經典橫式攝影｜此區為單選，點一下加入，再點一次取消">4:3</button>
+<button class="chip ratio-chip" data-en="vertical 2:3 composition for posters and full-body portraits" title="海報、全身人像｜此區為單選，點一下加入，再點一次取消">2:3</button>
+<button class="chip ratio-chip" data-en="horizontal 3:2 camera photography composition" title="相機橫幅攝影｜此區為單選，點一下加入，再點一次取消">3:2</button>
+</div>
+</div>
+<div class="group">
+<div class="group-head single-title">
+<h3>分格畫面</h3>
+</div>
+<div class="chips">
+<button class="chip layout-chip" data-en="two-panel split layout within one complete image" title="一張圖片內分成兩個獨立畫面｜此區為單選，點一下加入，再點一次取消">兩格畫面</button>
+<button class="chip layout-chip" data-en="three-panel layout within one complete image" title="一張圖片內分成三個獨立畫面｜此區為單選，點一下加入，再點一次取消">三格畫面</button>
+<button class="chip layout-chip" data-en="four-panel layout within one complete image" title="一張圖片內分成四個獨立畫面｜此區為單選，點一下加入，再點一次取消">四格畫面</button>
+<button class="chip layout-chip" data-en="six-panel 2 by 3 grid layout within one complete image" title="一張圖片內分成六個獨立畫面｜此區為單選，點一下加入，再點一次取消">六格畫面</button>
+<button class="chip layout-chip" data-en="nine-panel 3 by 3 grid layout within one complete image" title="一張圖片內採用 3×3 九宮格排列｜此區為單選，點一下加入，再點一次取消">九宮格畫面</button>
+</div>
+</div>
+<div class="group">
+<div class="group-head single-title">
+<h3>特色版型</h3>
+</div>
+<div class="chips">
+<button class="chip layout-chip" data-en="one large main image with three smaller detail images in the same composition" title="一張大型主視覺搭配三張局部細節圖｜此區為單選，點一下加入，再點一次取消">主圖＋三張細節圖</button>
+<button class="chip layout-chip" data-en="cinematic filmstrip storyboard layout with sequential frames" title="以電影膠卷形式排列連續分鏡｜此區為單選，點一下加入，再點一次取消">電影膠卷式分鏡</button>
+<button class="chip layout-chip" data-en="asymmetrical editorial magazine collage layout" title="不規則、具有設計感的雜誌拼貼排版｜此區為單選，點一下加入，再點一次取消">不規則雜誌拼貼</button>
 </div>
 </div>
 </div>
@@ -2506,6 +2522,17 @@ function saveBuilder(){
 
 
 function migrateSavedItems(items){
+  const legacyRatioMap = {
+    '9:16 手機直式、桌布': { zh:'9:16', en:'vertical 9:16 composition, smartphone wallpaper aspect ratio' },
+    '16:9 橫式電影畫面': { zh:'16:9', en:'horizontal 16:9 composition, cinematic widescreen aspect ratio' },
+    '1:1 正方形頭貼、貼文': { zh:'1:1', en:'square 1:1 composition, profile picture and social post aspect ratio' },
+    '4:5 社群直式人像': { zh:'4:5', en:'vertical 4:5 composition, social media portrait aspect ratio' },
+    '3:4 經典直式攝影': { zh:'3:4', en:'classic vertical 3:4 photography composition' },
+    '4:3 經典橫式攝影': { zh:'4:3', en:'classic horizontal 4:3 photography composition' },
+    '2:3 海報、全身人像': { zh:'2:3', en:'vertical 2:3 composition for posters and full-body portraits' },
+    '3:2 相機橫幅攝影': { zh:'3:2', en:'horizontal 3:2 camera photography composition' }
+  };
+
   const deletedLabels = new Set([
     '自然比例',
     '自然視線流動',
@@ -2522,6 +2549,16 @@ function migrateSavedItems(items){
       return true;
     })
     .map(item=>{
+      const migratedRatio = legacyRatioMap[item.zh];
+      if(migratedRatio){
+        return {
+          ...item,
+          id:'chip:' + migratedRatio.zh,
+          zh:migratedRatio.zh,
+          en:migratedRatio.en
+        };
+      }
+
       if(item.zh === '冷白膚色'){
         return {
           ...item,
@@ -2541,7 +2578,10 @@ function migrateSavedItems(items){
       }
 
       return item;
-    });
+    })
+    .filter((item, index, migratedItems)=>
+      migratedItems.findIndex(other=>other.id === item.id) === index
+    );
 }
 
 function loadBuilder(){
@@ -2591,6 +2631,27 @@ function toggleRatioChip(chip){
   renderPrompt();
 }
 
+function toggleLayoutChip(chip){
+  const zh = chip.textContent.trim();
+  const id = 'chip:' + zh;
+  const wasSelected = hasItem(id);
+
+  document.querySelectorAll('.layout-chip').forEach(other=>{
+    removeItem('chip:' + other.textContent.trim());
+  });
+
+  if(!wasSelected){
+    addItem({
+      id,
+      type:'chip',
+      zh,
+      en:chip.dataset.en || zh
+    });
+  }
+
+  renderPrompt();
+}
+
 function toggleChip(chip){
   const zh = chip.textContent.trim();
   const id = 'chip:' + zh;
@@ -2606,6 +2667,8 @@ document.querySelectorAll('.chip').forEach(chip=>{
   chip.addEventListener('click', ()=>{
     if(chip.classList.contains('ratio-chip')){
       toggleRatioChip(chip);
+    }else if(chip.classList.contains('layout-chip')){
+      toggleLayoutChip(chip);
     }else{
       toggleChip(chip);
     }
