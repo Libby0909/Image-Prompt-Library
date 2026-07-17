@@ -1866,21 +1866,53 @@
     }
 
 
-    /* 02｜尺寸與畫面比例：桌面版按鈕整齊留在同一排 */
-    @media(min-width:851px){
-      #ratio .groups > .group:nth-child(1) .chips{
-        display:grid;
-        grid-template-columns:repeat(8,minmax(0,1fr));
-        gap:6px;
-      }
+    /* 01｜尺寸與畫面比例：精簡的直式、橫式、方形分類 */
+    .ratio-subgroups{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:8px 12px;
+    }
 
+    .ratio-subgroup{
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      min-width:0;
+    }
+
+    .ratio-subtitle{
+      flex:0 0 auto;
+      color:#7a6877;
+      font-size:12px;
+      font-weight:900;
+      line-height:1;
+      white-space:nowrap;
+    }
+
+    .ratio-subgroup .chips{
+      display:inline-flex;
+      flex-wrap:nowrap;
+      gap:7px;
+    }
+
+    .ratio-subgroup .chip{
+      min-width:46px;
+      min-height:38px;
+      justify-content:center;
+      padding:7px 8px !important;
+      white-space:nowrap;
+      text-align:center;
+    }
+
+    /* 桌面版分格畫面固定同排 */
+    @media(min-width:851px){
       #ratio .groups > .group:nth-child(2) .chips{
         display:grid;
         grid-template-columns:repeat(5,minmax(0,1fr));
         gap:6px;
       }
 
-      #ratio .groups > .group:nth-child(1) .chip,
       #ratio .groups > .group:nth-child(2) .chip{
         width:100%;
         min-width:0;
@@ -1888,6 +1920,27 @@
         padding:9px 6px !important;
         white-space:nowrap;
         text-align:center;
+      }
+    }
+
+    @media(max-width:560px){
+      .ratio-subgroups{
+        gap:7px 10px;
+      }
+
+      .ratio-subgroup{
+        gap:5px;
+      }
+
+      .ratio-subtitle{
+        font-size:11px;
+      }
+
+      .ratio-subgroup .chip{
+        min-width:43px;
+        min-height:36px;
+        padding:7px 7px !important;
+        font-size:13px !important;
       }
     }
 
@@ -1938,18 +1991,34 @@
 </div>
 </div>
 <div class="groups">
-<div class="group">
+<div class="group ratio-common-group">
 <div class="group-head single-title">
 <h3>常用比例</h3>
 </div>
+<div class="ratio-subgroups">
+<div class="ratio-subgroup">
+<div class="ratio-subtitle">直式</div>
 <div class="chips">
 <button class="chip ratio-chip" data-en="vertical 9:16 composition, smartphone wallpaper aspect ratio" title="手機直式、桌布｜此區為單選，點一下加入，再點一次取消">9:16</button>
-<button class="chip ratio-chip" data-en="horizontal 16:9 composition, cinematic widescreen aspect ratio" title="橫式電影畫面｜此區為單選，點一下加入，再點一次取消">16:9</button>
-<button class="chip ratio-chip" data-en="square 1:1 composition, profile picture and social post aspect ratio" title="正方形頭貼、貼文｜此區為單選，點一下加入，再點一次取消">1:1</button>
 <button class="chip ratio-chip" data-en="vertical 4:5 composition, social media portrait aspect ratio" title="社群直式人像｜此區為單選，點一下加入，再點一次取消">4:5</button>
-<button class="chip ratio-chip" data-en="classic vertical 3:4 photography composition" title="經典直式攝影｜此區為單選，點一下加入，再點一次取消">3:4</button><button class="chip ratio-chip" data-en="classic horizontal 4:3 photography composition" title="經典橫式攝影｜此區為單選，點一下加入，再點一次取消">4:3</button>
+<button class="chip ratio-chip" data-en="classic vertical 3:4 photography composition" title="經典直式攝影｜此區為單選，點一下加入，再點一次取消">3:4</button>
 <button class="chip ratio-chip" data-en="vertical 2:3 composition for posters and full-body portraits" title="海報、全身人像｜此區為單選，點一下加入，再點一次取消">2:3</button>
+</div>
+</div>
+<div class="ratio-subgroup">
+<div class="ratio-subtitle">橫式</div>
+<div class="chips">
+<button class="chip ratio-chip" data-en="horizontal 16:9 composition, cinematic widescreen aspect ratio" title="橫式電影畫面｜此區為單選，點一下加入，再點一次取消">16:9</button>
+<button class="chip ratio-chip" data-en="classic horizontal 4:3 photography composition" title="經典橫式攝影｜此區為單選，點一下加入，再點一次取消">4:3</button>
 <button class="chip ratio-chip" data-en="horizontal 3:2 camera photography composition" title="相機橫幅攝影｜此區為單選，點一下加入，再點一次取消">3:2</button>
+</div>
+</div>
+<div class="ratio-subgroup">
+<div class="ratio-subtitle">方形</div>
+<div class="chips">
+<button class="chip ratio-chip" data-en="square 1:1 composition, profile picture and social post aspect ratio" title="正方形頭貼、貼文｜此區為單選，點一下加入，再點一次取消">1:1</button>
+</div>
+</div>
 </div>
 </div>
 <div class="group">
