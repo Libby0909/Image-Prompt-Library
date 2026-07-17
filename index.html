@@ -1864,6 +1864,33 @@
     .group-head.single-title{
       justify-content:flex-start;
     }
+
+
+    /* 02｜尺寸與畫面比例：桌面版按鈕整齊留在同一排 */
+    @media(min-width:851px){
+      #ratio .groups > .group:nth-child(1) .chips{
+        display:grid;
+        grid-template-columns:repeat(8,minmax(0,1fr));
+        gap:6px;
+      }
+
+      #ratio .groups > .group:nth-child(2) .chips{
+        display:grid;
+        grid-template-columns:repeat(5,minmax(0,1fr));
+        gap:6px;
+      }
+
+      #ratio .groups > .group:nth-child(1) .chip,
+      #ratio .groups > .group:nth-child(2) .chip{
+        width:100%;
+        min-width:0;
+        justify-content:center;
+        padding:9px 6px !important;
+        white-space:nowrap;
+        text-align:center;
+      }
+    }
+
 </style>
 <meta content="#fffafc" name="theme-color"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="default" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><link href="favicon.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/><meta content="Libby 的生圖詞庫" name="apple-mobile-web-app-title"/></head>
 <body>
